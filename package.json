@@ -9,6 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "overrides": {
+    "slate": "0.118.0",
+    "slate-dom": "0.117.4",
+    "slate-react": "0.117.1"
+  },
   "dependencies": {
     "@platejs/basic-nodes": "^49.0.0",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
