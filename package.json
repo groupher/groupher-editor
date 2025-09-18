@@ -1,12 +1,16 @@
 {
   "name": "@groupher/rich-editor",
-  "private": true,
+  "private": false,
   "version": "0.0.1",
+  "main": "dist/rich-editor.umd.js",
+  "module": "dist/rich-editor.es.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "build": "rm -rf dist && tsc && vite build",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.types.json",
+    "build:vite": "vite build",
     "preview": "vite preview"
   },
   "overrides": {
