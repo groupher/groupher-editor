@@ -19,6 +19,8 @@ import { ToolbarButton } from "@/components/ui/toolbar"; // Generic toolbar butt
 import { FixedToolbar } from "@/components/ui/fixed-toolbar";
 import { MarkToolbarButton } from "@/components/ui/mark-toolbar-button";
 
+import { EditorStatic } from "@/components/ui/editor-static";
+
 const initialValue: Value = [
   {
     children: [{ text: "Title" }],
@@ -53,12 +55,22 @@ export default function App() {
       H3Plugin.withComponent(H3Element),
       BlockquotePlugin.withComponent(BlockquoteElement),
     ], // mark plugins
-    value: initialValue, // initial content
+    // value: initialValue, // initial content
+    value: () => {
+      const savedValue = localStorage.getItem("installation-react-demo");
+      return savedValue ? JSON.parse(savedValue) : initialValue;
+    },
   });
 
   return (
     <div className="m-5 debug">
-      <Plate editor={editor}>
+      <Plate
+        editor={editor}
+        onChange={({ value }) => {
+          console.log("## on change: ", value)
+          localStorage.setItem("installation-react-demo", JSON.stringify(value));
+        }}
+      >
         <FixedToolbar className="justify-start rounded-t-lg">
           <ToolbarButton onClick={() => editor.tf.h1.toggle()}>H1</ToolbarButton>
           <ToolbarButton onClick={() => editor.tf.h2.toggle()}>H2</ToolbarButton>
@@ -74,9 +86,15 @@ export default function App() {
           <MarkToolbarButton nodeType="underline" tooltip="Underline (⌘+U)">
             U
           </MarkToolbarButton>
+
+          <div className="flex-1" />
+          <ToolbarButton className="px-2" onClick={() => editor.tf.setValue(initialValue)}>
+            Reset
+          </ToolbarButton>
         </FixedToolbar>
         <EditorContainer>
           <Editor placeholder="Type your amazing content here..." />
+          <EditorStatic editor={editor} />
         </EditorContainer>
       </Plate>
     </div>
