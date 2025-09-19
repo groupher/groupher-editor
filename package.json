@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/rich-editor.umd.js",
   "module": "dist/rich-editor.es.js",
   "type": "module",
@@ -37,7 +37,7 @@
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.12"
   },
-   "peerDependencies": {
+  "peerDependencies": {
     "react": ">=16.8.0 <20.0.0",
     "react-dom": ">=16.8.0 <20.0.0"
   },
