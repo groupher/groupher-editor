@@ -44,7 +44,7 @@ const initialValue: Value = [
   },
 ];
 
-export default function App() {
+export default function RichEditor() {
   const editor = usePlateEditor({
     plugins: [
       BoldPlugin,

@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "dist/rich-editor.umd.js",
   "module": "dist/rich-editor.es.js",
   "type": "module",
@@ -11,6 +11,7 @@
     "clean": "rm -rf dist",
     "typecheck": "tsc -p tsconfig.types.json",
     "build:vite": "vite build",
+    "publish": "npm publish --access public",
     "preview": "vite preview"
   },
   "overrides": {
@@ -35,6 +36,10 @@
     "tailwind-merge": "^3.3.1",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.12"
+  },
+   "peerDependencies": {
+    "react": ">=16.8.0 <20.0.0",
+    "react-dom": ">=16.8.0 <20.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
