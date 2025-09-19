@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist/rich-editor.umd.js",
   "module": "dist/rich-editor.es.js",
   "type": "module",
@@ -31,8 +31,8 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.542.0",
     "platejs": "^49.2.12",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "tailwind-merge": "^3.3.1",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.12"
