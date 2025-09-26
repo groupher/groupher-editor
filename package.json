@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.5",
+  "version": "0.0.7",
   "main": "dist/rich-editor.umd.js",
   "module": "dist/rich-editor.es.js",
   "type": "module",
@@ -20,6 +20,7 @@
     "slate-react": "0.117.1"
   },
   "dependencies": {
+    "@groupher/rich-editor": "^0.0.7",
     "@platejs/basic-nodes": "^49.0.0",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-separator": "^1.1.7",
@@ -36,10 +37,6 @@
     "tailwind-merge": "^3.3.1",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.12"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0 <20.0.0",
-    "react-dom": ">=16.8.0 <20.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

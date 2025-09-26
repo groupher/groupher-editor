@@ -16,7 +16,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/main.tsx'), // targeting export file
+      entry: path.resolve(__dirname, 'src/RichEditor.tsx'), // targeting export file
       name: 'RichEditor',
       formats: ['es', 'umd'], // two export format
       fileName: (format) => `rich-editor.${format}.js`
