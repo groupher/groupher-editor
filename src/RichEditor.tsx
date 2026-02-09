@@ -1,102 +1,214 @@
+import * as React from "react";
+
 import type { Value } from "platejs";
 
-import {
-  BlockquotePlugin,
-  H1Plugin,
-  H2Plugin,
-  H3Plugin,
-  BoldPlugin,
-  ItalicPlugin,
-  UnderlinePlugin,
-} from "@platejs/basic-nodes/react";
+import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
 import { Plate, usePlateEditor } from "platejs/react";
 
+import { EditorKit } from "@/components/editor/editor-kit";
+import { ActionBar } from "@/components/ui/action-bar";
+import { Button } from "@/components/ui/button";
 import { Editor, EditorContainer } from "@/components/ui/editor";
-import { BlockquoteElement } from "@/components/ui/blockquote-node";
-import { H1Element, H2Element, H3Element } from "@/components/ui/heading-node";
-import { ToolbarButton } from "@/components/ui/toolbar"; // Generic toolbar button
-
-import { FixedToolbar } from "@/components/ui/fixed-toolbar";
+import { FloatingToolbar } from "@/components/ui/floating-toolbar";
+import { LinkToolbarButton } from "@/components/ui/link-toolbar-button";
 import { MarkToolbarButton } from "@/components/ui/mark-toolbar-button";
+import { I18nProvider, type TLocale, useI18n } from "@/i18n";
+import { MentionProvider, type TMentionOption } from "@/mention-context";
 
-import { EditorStatic } from "@/components/ui/editor-static";
+const storageKey = "groupher-rich-editor-value";
 
-const initialValue: Value = [
-  {
-    children: [{ text: "Title" }],
-    type: "h3",
-  },
-  {
-    children: [{ text: "This is a quote." }],
-    type: "blockquote",
-  },
-  {
-    type: "p",
-    children: [
-      { text: "Hello! Try out the " },
-      { text: "bold", bold: true },
-      { text: ", " },
-      { text: "italic", italic: true },
-      { text: ", and " },
-      { text: "underline", underline: true },
-      { text: " formatting." },
-    ],
-  },
+const defaultValue: Value = [
+	{
+		type: "h1",
+		children: [{ text: "Plate Editor" }],
+	},
+	{
+		type: "p",
+		children: [
+			{ text: "Use " },
+			{ text: "/", bold: true },
+			{ text: " to open the slash menu and " },
+			{ text: "@", bold: true },
+			{ text: " to mention." },
+		],
+	},
+	{
+		type: "blockquote",
+		children: [{ text: "A short quote block for emphasis." }],
+	},
+	{
+		type: "callout",
+		icon: "💡",
+		children: [{ text: "Callout blocks highlight important notes." }],
+	},
+	{
+		type: "toggle",
+		id: "toggle-1",
+		children: [{ text: "Toggle blocks can hide content." }],
+	},
+	{
+		type: "p",
+		indent: 1,
+		listStyleType: "disc",
+		children: [{ text: "Bulleted list item." }],
+	},
+	{
+		type: "p",
+		indent: 1,
+		listStyleType: "decimal",
+		children: [{ text: "Numbered list item." }],
+	},
+	{
+		type: "p",
+		indent: 1,
+		listStyleType: "todo",
+		checked: false,
+		children: [{ text: "Todo list item." }],
+	},
 ];
 
-export default function RichEditor() {
-  const editor = usePlateEditor({
-    plugins: [
-      BoldPlugin,
-      ItalicPlugin,
-      UnderlinePlugin,
-      H1Plugin.withComponent(H1Element),
-      H2Plugin.withComponent(H2Element),
-      H3Plugin.withComponent(H3Element),
-      BlockquotePlugin.withComponent(BlockquoteElement),
-    ], // mark plugins
-    // value: initialValue, // initial content
-    value: () => {
-      const savedValue = localStorage.getItem("installation-react-demo");
-      return savedValue ? JSON.parse(savedValue) : initialValue;
-    },
-  });
+type TRichEditorProps = {
+	locale?: TLocale;
+	mentionOptions?: TMentionOption[];
+	onMentionSearch?: (query: string) => void;
+};
 
-  return (
-    <div className="m-5 debug">
-      <Plate
-        editor={editor}
-        onChange={({ value }) => {
-          console.log("## on change: ", value)
-          localStorage.setItem("installation-react-demo", JSON.stringify(value));
-        }}
-      >
-        <FixedToolbar className="justify-start rounded-t-lg">
-          <ToolbarButton onClick={() => editor.tf.h1.toggle()}>H1</ToolbarButton>
-          <ToolbarButton onClick={() => editor.tf.h2.toggle()}>H2</ToolbarButton>
-          <ToolbarButton onClick={() => editor.tf.h3.toggle()}>H3</ToolbarButton>
-          <ToolbarButton onClick={() => editor.tf.blockquote.toggle()}>Quote</ToolbarButton>
+function RichEditorInner() {
+	const i18n = useI18n();
+	const [value, setValue] = React.useState<Value>(() => {
+		if (typeof window === "undefined") return defaultValue;
 
-          <MarkToolbarButton nodeType="bold" tooltip="Bold (⌘+B)">
-            B
-          </MarkToolbarButton>
-          <MarkToolbarButton nodeType="italic" tooltip="Italic (⌘+I)">
-            I
-          </MarkToolbarButton>
-          <MarkToolbarButton nodeType="underline" tooltip="Underline (⌘+U)">
-            U
-          </MarkToolbarButton>
+		const savedValue = localStorage.getItem(storageKey);
 
-          <div className="flex-1" />
-          <ToolbarButton className="px-2" onClick={() => editor.tf.setValue(initialValue)}>
-            Reset
-          </ToolbarButton>
-        </FixedToolbar>
-        <EditorContainer>
-          <Editor placeholder="Type your amazing content here..." />
-          <EditorStatic editor={editor} />
-        </EditorContainer>
-      </Plate>
-    </div>
-  );
+		if (!savedValue) return defaultValue;
+
+		try {
+			return JSON.parse(savedValue) as Value;
+		} catch {
+			return defaultValue;
+		}
+	});
+	const [jsonInput, setJsonInput] = React.useState("");
+	const [jsonError, setJsonError] = React.useState("");
+	const [readOnlyValue, setReadOnlyValue] = React.useState<Value>(value);
+
+	const editor = usePlateEditor({
+		plugins: EditorKit,
+		value,
+	});
+	const readOnlyEditor = usePlateEditor({
+		plugins: EditorKit,
+		value: readOnlyValue,
+	});
+
+	const handleExport = React.useCallback(() => {
+		const nextJson = JSON.stringify(value, null, 2);
+		setJsonInput(nextJson);
+		setReadOnlyValue(value);
+		setJsonError("");
+	}, [value]);
+
+	const handleRenderReadonly = React.useCallback(() => {
+		try {
+			const parsed = JSON.parse(jsonInput) as Value;
+			setReadOnlyValue(parsed);
+			setJsonError("");
+		} catch {
+			setJsonError(i18n.export.invalidJson);
+		}
+	}, [i18n.export.invalidJson, jsonInput]);
+
+	React.useEffect(() => {
+		readOnlyEditor.tf.setValue(readOnlyValue);
+	}, [readOnlyEditor, readOnlyValue]);
+
+	return (
+		<div className="m-6 space-y-6">
+		<Plate
+			editor={editor}
+			onChange={({ value }) => {
+				setValue(value);
+				localStorage.setItem(storageKey, JSON.stringify(value));
+			}}
+		>
+				<FloatingToolbar>
+					<MarkToolbarButton nodeType="bold" tooltip={i18n.toolbar.bold}>
+						<Bold className="size-4" />
+					</MarkToolbarButton>
+					<MarkToolbarButton nodeType="italic" tooltip={i18n.toolbar.italic}>
+						<Italic className="size-4" />
+					</MarkToolbarButton>
+					<MarkToolbarButton
+						nodeType="underline"
+						tooltip={i18n.toolbar.underline}
+					>
+						<Underline className="size-4" />
+					</MarkToolbarButton>
+					<MarkToolbarButton
+						nodeType="strikethrough"
+						tooltip={i18n.toolbar.strikethrough}
+					>
+						<Strikethrough className="size-4" />
+					</MarkToolbarButton>
+					<LinkToolbarButton />
+				</FloatingToolbar>
+
+			<EditorContainer>
+				<Editor placeholder={i18n.placeholder} />
+				<ActionBar />
+			</EditorContainer>
+		</Plate>
+
+			<div className="rounded-lg border border-border bg-card p-4">
+				<div className="flex flex-wrap items-center justify-between gap-3">
+					<h3 className="text-sm font-semibold">{i18n.export.title}</h3>
+					<div className="flex items-center gap-2">
+						<Button size="sm" onClick={handleExport}>
+							{i18n.export.button}
+						</Button>
+						<Button size="sm" variant="outline" onClick={handleRenderReadonly}>
+							{i18n.export.loadButton}
+						</Button>
+					</div>
+				</div>
+				<textarea
+					className="mt-3 h-40 w-full rounded-md border border-input bg-background p-3 text-xs font-mono text-foreground"
+					placeholder={i18n.export.placeholder}
+					value={jsonInput}
+					onChange={(event) => setJsonInput(event.target.value)}
+				/>
+				{jsonError ? (
+					<p className="mt-2 text-xs text-destructive">{jsonError}</p>
+				) : null}
+			</div>
+
+			<div className="rounded-lg border border-border bg-card">
+				<div className="border-b border-border px-4 py-2 text-sm font-semibold">
+					{i18n.export.readonlyTitle}
+				</div>
+				<Plate editor={readOnlyEditor} readOnly>
+					<EditorContainer>
+						<Editor variant="demo" />
+					</EditorContainer>
+				</Plate>
+			</div>
+		</div>
+	);
+}
+
+export default function RichEditor({
+	locale,
+	mentionOptions,
+	onMentionSearch,
+}: TRichEditorProps) {
+	return (
+		<I18nProvider locale={locale}>
+			<MentionProvider
+				mentionOptions={mentionOptions}
+				onMentionSearch={onMentionSearch}
+			>
+				<RichEditorInner />
+			</MentionProvider>
+		</I18nProvider>
+	);
 }
