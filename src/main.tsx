@@ -1,11 +1,32 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-import './global.css'
-import App from './App.tsx'
+import "./global.css";
+import RichEditor from "./RichEditor.tsx";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+const MENTION_OPTIONS = [
+	{
+		key: "0",
+		text: "Alice",
+	},
+	{
+		key: "1",
+		text: "Bob",
+	},
+	{
+		key: "2",
+		text: "Simon",
+	},
+];
+
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+	throw new Error("Root element not found");
+}
+
+createRoot(rootElement).render(
+	<StrictMode>
+		<RichEditor mentionOptions={MENTION_OPTIONS} />
+	</StrictMode>,
+);

@@ -112,7 +112,7 @@ const dropdownArrowVariants = cva(
   }
 );
 
-type ToolbarButtonProps = {
+type TToolbarButtonProps = {
   isDropdown?: boolean;
   pressed?: boolean;
 } & Omit<
@@ -129,7 +129,7 @@ export const ToolbarButton = withTooltip(function ToolbarButton({
   size = 'sm',
   variant,
   ...props
-}: ToolbarButtonProps) {
+}: TToolbarButtonProps) {
   return typeof pressed === 'boolean' ? (
     <ToolbarToggleGroup disabled={props.disabled} value="single" type="single">
       <ToolbarToggleItem
@@ -190,7 +190,7 @@ export function ToolbarSplitButton({
   );
 }
 
-type ToolbarSplitButtonPrimaryProps = Omit<
+type TToolbarSplitButtonPrimaryProps = Omit<
   React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>,
   'value'
 > &
@@ -202,7 +202,7 @@ export function ToolbarSplitButtonPrimary({
   size = 'sm',
   variant,
   ...props
-}: ToolbarSplitButtonPrimaryProps) {
+}: TToolbarSplitButtonPrimaryProps) {
   return (
     <span
       className={cn(
@@ -226,10 +226,11 @@ export function ToolbarSplitButtonSecondary({
   size,
   variant,
   ...props
-}: React.ComponentPropsWithoutRef<'span'> &
+}: React.ComponentPropsWithoutRef<'button'> &
   VariantProps<typeof dropdownArrowVariants>) {
   return (
-    <span
+    <button
+      type="button"
       className={cn(
         dropdownArrowVariants({
           size,
@@ -239,11 +240,10 @@ export function ToolbarSplitButtonSecondary({
         className
       )}
       onClick={(e) => e.stopPropagation()}
-      role="button"
       {...props}
     >
       <ChevronDown className="size-3.5 text-muted-foreground" data-icon />
-    </span>
+    </button>
   );
 }
 
@@ -283,7 +283,7 @@ export function ToolbarGroup({
   );
 }
 
-type TooltipProps<T extends React.ElementType> = {
+type TTooltipProps<T extends React.ElementType> = {
   tooltip?: React.ReactNode;
   tooltipContentProps?: Omit<
     React.ComponentPropsWithoutRef<typeof TooltipContent>,
@@ -303,7 +303,7 @@ function withTooltip<T extends React.ElementType>(Component: T) {
     tooltipProps,
     tooltipTriggerProps,
     ...props
-  }: TooltipProps<T>) {
+  }: TTooltipProps<T>) {
     const [mounted, setMounted] = React.useState(false);
 
     React.useEffect(() => {
