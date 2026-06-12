@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.8",
+  "version": "0.0.10",
   "main": "dist/rich-editor.umd.js",
   "module": "dist/rich-editor.es.js",
   "type": "module",
@@ -11,7 +11,7 @@
     "clean": "rm -rf dist",
     "typecheck": "tsc -p tsconfig.types.json",
     "build:vite": "vite build",
-    "publish": "npm publish --access public",
+    "release": "npm publish --access public",
     "preview": "vite preview"
   },
   "overrides": {
