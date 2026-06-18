@@ -5,7 +5,6 @@ import * as React from 'react';
 import type { PlateElementProps } from 'platejs/react';
 
 import { PlateElement, useEditorReadOnly, useEditorRef } from 'platejs/react';
-import { Transforms } from 'platejs';
 
 import { cn } from '@/lib/utils';
 
@@ -19,6 +18,7 @@ export function ToggleElement({ element, children, ...props }: PlateElementProps
   return (
     <PlateElement
       {...props}
+      element={element}
       className="my-3 rounded-md border border-border bg-muted/40"
     >
       <div className="flex items-start gap-2 px-2 py-2">
@@ -27,16 +27,10 @@ export function ToggleElement({ element, children, ...props }: PlateElementProps
           className="mt-1 text-xs text-muted-foreground"
           onClick={() => {
             if (readOnly) return;
-            Transforms.setNodes(
-              editor,
-              { collapsed: !isCollapsed },
-              {
-                at: editor.selection ?? undefined,
-                match: (node) =>
-                  !('text' in node) &&
-                  (node as { type?: string }).type === 'toggle',
-              }
-            );
+            const path = editor.api.findPath(element);
+            if (!path) return;
+
+            editor.tf.setNodes({ collapsed: !isCollapsed }, { at: path });
           }}
         >
           {isCollapsed ? '▶' : '▼'}

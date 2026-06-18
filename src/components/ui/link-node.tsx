@@ -14,6 +14,7 @@ export function LinkElement({ element, children, ...props }: PlateElementProps) 
   return (
     <PlateElement
       {...props}
+      element={element}
       asChild
       className={cn('text-brand underline decoration-brand/60 underline-offset-2')}
     >

@@ -2,6 +2,8 @@ import * as React from "react";
 
 import type { Value } from "platejs";
 
+import "./global.css";
+
 import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
 import { Plate, usePlateEditor } from "platejs/react";
 
@@ -15,10 +17,7 @@ import { MarkToolbarButton } from "@/components/ui/mark-toolbar-button";
 import { I18nProvider, type TLocale, useI18n } from "@/i18n";
 import { MentionProvider, type TMentionOption } from "@/mention-context";
 
-const storageKey = "groupher-rich-editor-value";
-
 const cloneValue = (value: Value): Value => JSON.parse(JSON.stringify(value));
-
 const defaultValue: Value = [
 	{
 		type: "h1",
@@ -69,48 +68,66 @@ const defaultValue: Value = [
 	},
 ];
 
-type TRichEditorProps = {
+export type TRichEditorProps = {
+	value?: Value;
+	defaultValue?: Value;
+	onChange?: (value: Value) => void;
+	className?: string;
+	debugMode?: boolean;
 	locale?: TLocale;
 	mentionOptions?: TMentionOption[];
 	onMentionSearch?: (query: string) => void;
 };
 
-function RichEditorInner() {
+type TRichEditorInnerProps = {
+	value?: Value;
+	defaultValue: Value;
+	onChange?: (value: Value) => void;
+	className?: string;
+	debugMode: boolean;
+};
+
+function RichEditorInner({
+	value: controlledValue,
+	defaultValue,
+	onChange,
+	className,
+	debugMode,
+}: TRichEditorInnerProps) {
 	const i18n = useI18n();
+	const isControlled = controlledValue !== undefined;
 	const [value, setValue] = React.useState<Value>(() => {
-		if (typeof window === "undefined") return defaultValue;
-
-		const savedValue = localStorage.getItem(storageKey);
-
-		if (!savedValue) return defaultValue;
-
-		try {
-			return JSON.parse(savedValue) as Value;
-		} catch {
-			return defaultValue;
-		}
+		if (isControlled) return controlledValue;
+		return defaultValue;
 	});
+	const currentValue = isControlled ? controlledValue : value;
 	const [jsonInput, setJsonInput] = React.useState("");
 	const [jsonError, setJsonError] = React.useState("");
 	const [readOnlyValue, setReadOnlyValue] = React.useState<Value>(() =>
-		cloneValue(value),
+		cloneValue(currentValue),
 	);
 
 	const editor = usePlateEditor({
 		plugins: EditorKit,
-		value,
+		value: currentValue,
 	});
 	const readOnlyEditor = usePlateEditor({
 		plugins: EditorKit,
 		value: readOnlyValue,
 	});
 
+	React.useEffect(() => {
+		if (!isControlled) return;
+
+		editor.tf.setValue(controlledValue);
+	}, [controlledValue, editor, isControlled]);
+
 	const handleExport = React.useCallback(() => {
-		const nextJson = JSON.stringify(value, null, 2);
+		const nextJson = JSON.stringify(currentValue, null, 2);
 		setJsonInput(nextJson);
-		setReadOnlyValue(cloneValue(value));
+		setReadOnlyValue(cloneValue(currentValue));
 		setJsonError("");
-	}, [value]);
+	}, [currentValue]);
 
 	const handleRenderReadonly = React.useCallback(() => {
 		try {
@@ -127,12 +144,15 @@ function RichEditorInner() {
 	}, [readOnlyEditor, readOnlyValue]);
 
 	return (
-		<div className="m-6 space-y-6">
+		<div className={className}>
 		<Plate
 			editor={editor}
 			onChange={({ value }) => {
-				setValue(value);
-				localStorage.setItem(storageKey, JSON.stringify(value));
+				if (!isControlled) {
+					setValue(value);
+				}
+
+				onChange?.(value);
 			}}
 		>
 				<FloatingToolbar>
@@ -163,44 +183,57 @@ function RichEditorInner() {
 			</EditorContainer>
 		</Plate>
 
-			<div className="rounded-lg border border-border bg-card p-4">
-				<div className="flex flex-wrap items-center justify-between gap-3">
-					<h3 className="text-sm font-semibold">{i18n.export.title}</h3>
-					<div className="flex items-center gap-2">
-						<Button size="sm" onClick={handleExport}>
-							{i18n.export.button}
-						</Button>
-						<Button size="sm" variant="outline" onClick={handleRenderReadonly}>
-							{i18n.export.loadButton}
-						</Button>
+			{debugMode ? (
+				<div className="mt-6 space-y-6">
+					<div className="rounded-lg border border-border bg-card p-4">
+						<div className="flex flex-wrap items-center justify-between gap-3">
+							<h3 className="text-sm font-semibold">{i18n.export.title}</h3>
+							<div className="flex items-center gap-2">
+								<Button size="sm" onClick={handleExport}>
+									{i18n.export.button}
+								</Button>
+								<Button
+									size="sm"
+									variant="outline"
+									onClick={handleRenderReadonly}
+								>
+									{i18n.export.loadButton}
+								</Button>
+							</div>
+						</div>
+						<textarea
+							className="mt-3 h-40 w-full rounded-md border border-input bg-background p-3 text-xs font-mono text-foreground"
+							placeholder={i18n.export.placeholder}
+							value={jsonInput}
+							onChange={(event) => setJsonInput(event.target.value)}
+						/>
+						{jsonError ? (
+							<p className="mt-2 text-xs text-destructive">{jsonError}</p>
+						) : null}
+					</div>
+
+					<div className="rounded-lg border border-border bg-card">
+						<div className="border-b border-border px-4 py-2 text-sm font-semibold">
+							{i18n.export.readonlyTitle}
+						</div>
+						<Plate editor={readOnlyEditor} readOnly>
+							<EditorContainer>
+								<Editor variant="demo" />
+							</EditorContainer>
+						</Plate>
 					</div>
 				</div>
-				<textarea
-					className="mt-3 h-40 w-full rounded-md border border-input bg-background p-3 text-xs font-mono text-foreground"
-					placeholder={i18n.export.placeholder}
-					value={jsonInput}
-					onChange={(event) => setJsonInput(event.target.value)}
-				/>
-				{jsonError ? (
-					<p className="mt-2 text-xs text-destructive">{jsonError}</p>
-				) : null}
-			</div>
-
-			<div className="rounded-lg border border-border bg-card">
-				<div className="border-b border-border px-4 py-2 text-sm font-semibold">
-					{i18n.export.readonlyTitle}
-				</div>
-				<Plate editor={readOnlyEditor} readOnly>
-					<EditorContainer>
-						<Editor variant="demo" />
-					</EditorContainer>
-				</Plate>
-			</div>
+			) : null}
 		</div>
 	);
 }
 
 export default function RichEditor({
+	value,
+	defaultValue: defaultValueProp = defaultValue,
+	onChange,
+	className,
+	debugMode = false,
 	locale,
 	mentionOptions,
 	onMentionSearch,
@@ -211,7 +244,13 @@ export default function RichEditor({
 				mentionOptions={mentionOptions}
 				onMentionSearch={onMentionSearch}
 			>
-				<RichEditorInner />
+				<RichEditorInner
+					value={value}
+					defaultValue={defaultValueProp}
+					onChange={onChange}
+					className={className}
+					debugMode={debugMode}
+				/>
 			</MentionProvider>
 		</I18nProvider>
 	);
