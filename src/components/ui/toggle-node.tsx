@@ -1,36 +1,49 @@
 'use client';
 
+import * as React from 'react';
+
 import type { PlateElementProps } from 'platejs/react';
 
-import { useToggleButton, useToggleButtonState } from '@platejs/toggle/react';
-import { ChevronRight } from 'lucide-react';
-import { PlateElement } from 'platejs/react';
+import { PlateElement, useEditorReadOnly, useEditorRef } from 'platejs/react';
+import { Transforms } from 'platejs';
 
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-export function ToggleElement(props: PlateElementProps) {
-  const element = props.element;
-  const state = useToggleButtonState(element.id as string);
-  const { buttonProps, open } = useToggleButton(state);
+export function ToggleElement({ element, children, ...props }: PlateElementProps) {
+  const editor = useEditorRef();
+  const readOnly = useEditorReadOnly();
+  const isCollapsed = Boolean((element as { collapsed?: boolean }).collapsed);
+  const childArray = React.Children.toArray(children);
+  const [title, ...rest] = childArray;
 
   return (
-    <PlateElement {...props} className="pl-6">
-      <Button
-        size="icon"
-        variant="ghost"
-        className="-left-0.5 absolute top-0 size-6 cursor-pointer select-none items-center justify-center rounded-md p-px text-muted-foreground transition-colors hover:bg-accent [&_svg]:size-4"
-        contentEditable={false}
-        {...buttonProps}
-      >
-        <ChevronRight
-          className={
-            open
-              ? 'rotate-90 transition-transform duration-75'
-              : 'rotate-0 transition-transform duration-75'
-          }
-        />
-      </Button>
-      {props.children}
+    <PlateElement
+      {...props}
+      className="my-3 rounded-md border border-border bg-muted/40"
+    >
+      <div className="flex items-start gap-2 px-2 py-2">
+        <button
+          type="button"
+          className="mt-1 text-xs text-muted-foreground"
+          onClick={() => {
+            if (readOnly) return;
+            Transforms.setNodes(
+              editor,
+              { collapsed: !isCollapsed },
+              {
+                at: editor.selection ?? undefined,
+                match: (node) =>
+                  !('text' in node) &&
+                  (node as { type?: string }).type === 'toggle',
+              }
+            );
+          }}
+        >
+          {isCollapsed ? '▶' : '▼'}
+        </button>
+        <div className={cn('flex-1', readOnly && 'cursor-default')}>{title}</div>
+      </div>
+      <div className={cn('px-6 pb-3', isCollapsed && 'hidden')}>{rest}</div>
     </PlateElement>
   );
 }

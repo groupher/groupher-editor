@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./global.css";
-import RE from "@groupher/rich-editor";
 import RichEditor from "./RichEditor.tsx";
 
 const MENTION_OPTIONS = [
@@ -29,7 +28,5 @@ if (!rootElement) {
 createRoot(rootElement).render(
 	<StrictMode>
 		<RichEditor mentionOptions={MENTION_OPTIONS} />
-		<hr />
-		<RE />
 	</StrictMode>,
 );

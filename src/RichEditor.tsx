@@ -17,6 +17,8 @@ import { MentionProvider, type TMentionOption } from "@/mention-context";
 
 const storageKey = "groupher-rich-editor-value";
 
+const cloneValue = (value: Value): Value => JSON.parse(JSON.stringify(value));
+
 const defaultValue: Value = [
 	{
 		type: "h1",
@@ -90,7 +92,9 @@ function RichEditorInner() {
 	});
 	const [jsonInput, setJsonInput] = React.useState("");
 	const [jsonError, setJsonError] = React.useState("");
-	const [readOnlyValue, setReadOnlyValue] = React.useState<Value>(value);
+	const [readOnlyValue, setReadOnlyValue] = React.useState<Value>(() =>
+		cloneValue(value),
+	);
 
 	const editor = usePlateEditor({
 		plugins: EditorKit,
@@ -104,7 +108,7 @@ function RichEditorInner() {
 	const handleExport = React.useCallback(() => {
 		const nextJson = JSON.stringify(value, null, 2);
 		setJsonInput(nextJson);
-		setReadOnlyValue(value);
+		setReadOnlyValue(cloneValue(value));
 		setJsonError("");
 	}, [value]);
 
