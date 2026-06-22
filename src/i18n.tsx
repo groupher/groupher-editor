@@ -48,7 +48,7 @@ type TI18nStrings = {
 const translations: Record<TLocale, TI18nStrings> = {
   en: {
     locale: 'en',
-    placeholder: 'Type your content here...',
+    placeholder: 'Type / to insert a block or paste a link to embed content',
     toolbar: {
       bold: 'Bold',
       italic: 'Italic',
@@ -90,7 +90,7 @@ const translations: Record<TLocale, TI18nStrings> = {
   },
   'zh-CN': {
     locale: 'zh-CN',
-    placeholder: '输入内容…',
+    placeholder: '输入 / 以插入区块，或粘贴链接嵌入内容',
     toolbar: {
       bold: '加粗',
       italic: '斜体',

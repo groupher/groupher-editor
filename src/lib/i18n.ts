@@ -40,7 +40,7 @@ export const messages = {
       placeholder: '导出的 JSON 会出现在这里…',
       error: 'JSON 解析失败，请检查格式。',
     },
-    placeholder: '输入内容，使用 / 弹出命令…',
+    placeholder: '输入 / 以插入区块，或粘贴链接嵌入内容',
   },
   en: {
     editorTitle: 'Editor Demo',
@@ -81,7 +81,7 @@ export const messages = {
       placeholder: 'Exported JSON will appear here…',
       error: 'Failed to parse JSON. Please check the format.',
     },
-    placeholder: 'Type content and use / for commands…',
+    placeholder: 'Type / to insert a block or paste a link to embed content',
   },
 } as const;
 

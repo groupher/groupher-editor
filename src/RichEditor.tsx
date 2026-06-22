@@ -8,7 +8,19 @@ import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
 import { Plate, usePlateEditor } from "platejs/react";
 
 import { EditorKit } from "@/components/editor/editor-kit";
-import { ActionBar } from "@/components/ui/action-bar";
+import {
+	DiffEditorKit,
+	computeRichEditorDiffStats as computeDiffStats,
+	computeRichEditorDiffValue,
+	type TRichEditorDiffStats,
+} from "@/components/editor/plugins/diff-kit";
+import {
+	getQuickActionsInset,
+	getVisibleQuickActionItems,
+	type TRichEditorQuickActionsConfig,
+} from "@/components/editor/block-actions";
+import { BlockActionRail } from "@/components/ui/block-action-rail";
+import { BlockPlaceholder } from "@/components/ui/block-placeholder";
 import { Button } from "@/components/ui/button";
 import { Editor, EditorContainer } from "@/components/ui/editor";
 import { FloatingToolbar } from "@/components/ui/floating-toolbar";
@@ -18,6 +30,8 @@ import { I18nProvider, type TLocale, useI18n } from "@/i18n";
 import { MentionProvider, type TMentionOption } from "@/mention-context";
 
 const cloneValue = (value: Value): Value => JSON.parse(JSON.stringify(value));
+export type TRichEditorValue = Value;
+
 const defaultValue: Value = [
 	{
 		type: "h1",
@@ -69,11 +83,21 @@ const defaultValue: Value = [
 ];
 
 export type TRichEditorProps = {
-	value?: Value;
-	defaultValue?: Value;
-	onChange?: (value: Value) => void;
+	value?: TRichEditorValue;
+	defaultValue?: TRichEditorValue;
+	onChange?: (value: TRichEditorValue) => void;
 	className?: string;
 	debugMode?: boolean;
+	locale?: TLocale;
+	mentionOptions?: TMentionOption[];
+	onMentionSearch?: (query: string) => void;
+	quickActions?: TRichEditorQuickActionsConfig;
+};
+
+export type TRichEditorDiffProps = {
+	previousValue: TRichEditorValue;
+	currentValue: TRichEditorValue;
+	className?: string;
 	locale?: TLocale;
 	mentionOptions?: TMentionOption[];
 	onMentionSearch?: (query: string) => void;
@@ -85,6 +109,7 @@ type TRichEditorInnerProps = {
 	onChange?: (value: Value) => void;
 	className?: string;
 	debugMode: boolean;
+	quickActions?: TRichEditorQuickActionsConfig;
 };
 
 function RichEditorInner({
@@ -93,8 +118,16 @@ function RichEditorInner({
 	onChange,
 	className,
 	debugMode,
+	quickActions,
 }: TRichEditorInnerProps) {
 	const i18n = useI18n();
+	const visibleQuickActions = getVisibleQuickActionItems(quickActions);
+	const hasQuickActions = visibleQuickActions.length > 0;
+	const quickActionStyle = hasQuickActions
+		? ({
+				"--rich-editor-quick-action-space": `${getQuickActionsInset(quickActions)}px`,
+			} as React.CSSProperties)
+		: undefined;
 	const isControlled = controlledValue !== undefined;
 	const [value, setValue] = React.useState<Value>(() => {
 		if (isControlled) return controlledValue;
@@ -145,16 +178,16 @@ function RichEditorInner({
 
 	return (
 		<div className={className}>
-		<Plate
-			editor={editor}
-			onChange={({ value }) => {
-				if (!isControlled) {
-					setValue(value);
-				}
+			<Plate
+				editor={editor}
+				onChange={({ value }) => {
+					if (!isControlled) {
+						setValue(value);
+					}
 
-				onChange?.(value);
-			}}
-		>
+					onChange?.(value);
+				}}
+			>
 				<FloatingToolbar>
 					<MarkToolbarButton nodeType="bold" tooltip={i18n.toolbar.bold}>
 						<Bold className="size-4" />
@@ -177,11 +210,17 @@ function RichEditorInner({
 					<LinkToolbarButton />
 				</FloatingToolbar>
 
-			<EditorContainer>
-				<Editor placeholder={i18n.placeholder} />
-				<ActionBar />
-			</EditorContainer>
-		</Plate>
+				<EditorContainer style={quickActionStyle}>
+					<Editor
+						className={
+							hasQuickActions ? "rich-editor-with-quick-actions" : undefined
+						}
+						aria-placeholder={i18n.placeholder}
+					/>
+					<BlockPlaceholder text={i18n.placeholder} />
+					<BlockActionRail config={quickActions} />
+				</EditorContainer>
+			</Plate>
 
 			{debugMode ? (
 				<div className="mt-6 space-y-6">
@@ -228,6 +267,36 @@ function RichEditorInner({
 	);
 }
 
+function RichEditorDiffInner({
+	previousValue,
+	currentValue,
+	className,
+}: Pick<TRichEditorDiffProps, "previousValue" | "currentValue" | "className">) {
+	const diffValue = React.useMemo(
+		() => computeRichEditorDiffValue(previousValue, currentValue) as Value,
+		[previousValue, currentValue],
+	);
+
+	const editor = usePlateEditor({
+		plugins: DiffEditorKit,
+		value: diffValue,
+	});
+
+	React.useEffect(() => {
+		editor.tf.setValue(diffValue);
+	}, [diffValue, editor]);
+
+	return (
+		<div className={className}>
+			<Plate editor={editor} readOnly>
+				<EditorContainer>
+					<Editor />
+				</EditorContainer>
+			</Plate>
+		</div>
+	);
+}
+
 export default function RichEditor({
 	value,
 	defaultValue: defaultValueProp = defaultValue,
@@ -237,6 +306,7 @@ export default function RichEditor({
 	locale,
 	mentionOptions,
 	onMentionSearch,
+	quickActions,
 }: TRichEditorProps) {
 	return (
 		<I18nProvider locale={locale}>
@@ -250,8 +320,40 @@ export default function RichEditor({
 					onChange={onChange}
 					className={className}
 					debugMode={debugMode}
+					quickActions={quickActions}
 				/>
 			</MentionProvider>
 		</I18nProvider>
 	);
 }
+
+export function RichEditorDiff({
+	previousValue,
+	currentValue,
+	className,
+	locale,
+	mentionOptions,
+	onMentionSearch,
+}: TRichEditorDiffProps) {
+	return (
+		<I18nProvider locale={locale}>
+			<MentionProvider
+				mentionOptions={mentionOptions}
+				onMentionSearch={onMentionSearch}
+			>
+				<RichEditorDiffInner
+					previousValue={previousValue}
+					currentValue={currentValue}
+					className={className}
+				/>
+			</MentionProvider>
+		</I18nProvider>
+	);
+}
+
+export const computeRichEditorDiffStats = (
+	previousValue: TRichEditorValue,
+	currentValue: TRichEditorValue,
+): TRichEditorDiffStats => computeDiffStats(previousValue, currentValue);
+
+export type { TRichEditorDiffStats };

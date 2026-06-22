@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import type { PlateEditor, PlateElementProps } from 'platejs/react';
+import type { PlateElementProps } from 'platejs/react';
 
 import {
   ChevronRightIcon,
@@ -16,10 +16,10 @@ import {
   Quote,
   Square,
 } from 'lucide-react';
-import { type TComboboxInputElement, type TElement, KEYS } from 'platejs';
-import { ListStyleType } from '@platejs/list';
+import { type TComboboxInputElement, KEYS } from 'platejs';
 import { PlateElement } from 'platejs/react';
 
+import { applyBlockActionValue } from '@/components/editor/block-actions';
 import { useI18n } from '@/i18n';
 
 import {
@@ -37,39 +37,6 @@ type TGroupItem = {
 	value: string;
 	keywords?: string[];
 	label: string;
-};
-
-const listStyleMap: Record<string, ListStyleType> = {
-  [KEYS.ul]: ListStyleType.Disc,
-  [KEYS.ol]: ListStyleType.Decimal,
-  [KEYS.listTodo]: 'todo' as ListStyleType,
-};
-
-const listTypes = new Set(Object.keys(listStyleMap));
-
-const setBlockType = (editor: PlateEditor, type: string) => {
-  editor.tf.withoutNormalizing(() => {
-    const entries = editor.api.blocks({ mode: 'lowest' });
-
-    for (const [node, path] of entries) {
-      if (listTypes.has(type)) {
-        editor.tf.setNodes(
-          {
-            indent: 1,
-            listStyleType: listStyleMap[type],
-          },
-          { at: path }
-        );
-        continue;
-      }
-
-      if ((node as TElement)[KEYS.listType]) {
-        editor.tf.unsetNodes([KEYS.listType, 'indent'], { at: path });
-      }
-
-      editor.tf.setNodes({ type }, { at: path });
-    }
-  });
 };
 
 export function SlashInputElement(
@@ -171,7 +138,7 @@ export function SlashInputElement(
                 <InlineComboboxItem
                   key={value}
                   value={value}
-                  onClick={() => setBlockType(editor, value)}
+                  onClick={() => applyBlockActionValue(editor, value)}
                   label={label}
                   group={group}
                   keywords={keywords}

@@ -8,6 +8,7 @@ import type { PlateContentProps, PlateViewProps } from "platejs/react";
 import { cva } from "class-variance-authority";
 import { PlateContainer, PlateContent, PlateView } from "platejs/react";
 
+import { renderEditorPlaceholder } from "@/components/ui/editor-placeholder";
 import { cn } from "@/lib/utils";
 
 const editorContainerVariants = cva(
@@ -57,7 +58,7 @@ const editorVariants = cva(
 		"group/editor",
 		"relative w-full cursor-text overflow-x-hidden break-words whitespace-pre-wrap select-text",
 		"rounded-md ring-offset-background focus-visible:outline-none",
-		"placeholder:text-muted-foreground/80 **:data-slate-placeholder:!top-1/2 **:data-slate-placeholder:-translate-y-1/2 **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100!",
+		"placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100!",
 		"[&_strong]:font-bold",
 	),
 	{
@@ -90,7 +91,7 @@ export type TEditorProps = PlateContentProps &
 	VariantProps<typeof editorVariants>;
 
 export const Editor = React.forwardRef<HTMLDivElement, TEditorProps>(
-	({ className, disabled, focused, variant, ...props }, ref) => {
+	({ className, disabled, focused, renderPlaceholder, variant, ...props }, ref) => {
 		return (
 			<PlateContent
 				ref={ref}
@@ -104,6 +105,7 @@ export const Editor = React.forwardRef<HTMLDivElement, TEditorProps>(
 				)}
 				disabled={disabled}
 				disableDefaultStyles
+				renderPlaceholder={renderPlaceholder ?? renderEditorPlaceholder}
 				{...props}
 			/>
 		);

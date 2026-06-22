@@ -1,9 +1,10 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.14",
+  "version": "0.0.17",
   "main": "dist/rich-editor.umd.js",
   "module": "dist/rich-editor.es.js",
+  "types": "dist/index.d.ts",
   "style": "dist/rich-editor.css",
   "type": "module",
   "files": [
@@ -11,6 +12,7 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/rich-editor.es.js",
       "require": "./dist/rich-editor.umd.js"
     },
@@ -18,9 +20,10 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "rm -rf dist && tsc && vite build",
+    "build": "rm -rf dist && tsc && vite build && tsc --project tsconfig.types.json",
     "clean": "rm -rf dist",
     "typecheck": "tsc",
+    "build:types": "tsc --project tsconfig.types.json",
     "build:vite": "vite build",
     "release": "npm publish --access public",
     "preview": "vite preview"
@@ -31,6 +34,7 @@
     "@platejs/basic-nodes": "^53.0.0",
     "@platejs/callout": "^53.0.0",
     "@platejs/combobox": "^53.0.0",
+    "@platejs/diff": "^53.0.0",
     "@platejs/emoji": "^53.0.0",
     "@platejs/floating": "^53.0.0",
     "@platejs/indent": "^53.0.0",

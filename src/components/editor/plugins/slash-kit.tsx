@@ -7,7 +7,7 @@ import { SlashInputElement } from '@/components/ui/slash-node';
 export const SlashKit = [
   SlashPlugin.configure({
     options: {
-      trigger: '/',
+      trigger: ['/', '、'],
       triggerPreviousCharPattern: /^\s?$/,
     },
   }),
