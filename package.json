@@ -1,9 +1,9 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.17",
-  "main": "dist/rich-editor.umd.js",
-  "module": "dist/rich-editor.es.js",
+  "version": "0.0.21",
+  "main": "dist/rich-editor.js",
+  "module": "dist/rich-editor.js",
   "types": "dist/index.d.ts",
   "style": "dist/rich-editor.css",
   "type": "module",
@@ -13,20 +13,33 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/rich-editor.es.js",
-      "require": "./dist/rich-editor.umd.js"
+      "import": "./dist/rich-editor.js",
+      "default": "./dist/rich-editor.js"
+    },
+    "./diff-viewer": {
+      "types": "./dist/diff-viewer.d.ts",
+      "import": "./dist/diff-viewer.js",
+      "default": "./dist/diff-viewer.js"
+    },
+    "./diff": {
+      "types": "./dist/diff.d.ts",
+      "import": "./dist/diff.js",
+      "default": "./dist/diff.js"
     },
     "./style.css": "./dist/rich-editor.css"
   },
   "scripts": {
     "dev": "vite",
-    "build": "rm -rf dist && tsc && vite build && tsc --project tsconfig.types.json",
+    "build": "tsc && vite build && vite build --config vite.diff.config.ts && npm run build:types && tsc --project tsconfig.diff-types.json",
     "clean": "rm -rf dist",
+    "build:diff": "vite build --config vite.diff.config.ts && tsc --project tsconfig.diff-types.json",
     "typecheck": "tsc",
-    "build:types": "tsc --project tsconfig.types.json",
+    "build:types": "tsc --project tsconfig.types.json && tsc --project tsconfig.diff-viewer-types.json",
     "build:vite": "vite build",
     "release": "npm publish --access public",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@ariakit/react": "^0.4.12",
@@ -35,11 +48,11 @@
     "@platejs/callout": "^53.0.0",
     "@platejs/combobox": "^53.0.0",
     "@platejs/diff": "^53.0.0",
-    "@platejs/emoji": "^53.0.0",
+    "@platejs/emoji": "^53.1.7",
     "@platejs/floating": "^53.0.0",
     "@platejs/indent": "^53.0.0",
-    "@platejs/link": "^53.0.3",
-    "@platejs/list": "^53.0.2",
+    "@platejs/link": "^53.3.1",
+    "@platejs/list": "^53.1.3",
     "@platejs/mention": "^53.0.0",
     "@platejs/slash-command": "^53.0.0",
     "@platejs/toggle": "^53.0.0",
@@ -54,7 +67,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.542.0",
-    "platejs": "^53.0.7",
+    "platejs": "^53.2.4",
     "tailwind-merge": "^3.3.1",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.12"
@@ -79,6 +92,7 @@
     "tw-animate-css": "^1.3.7",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2"
+    "vite": "^7.1.2",
+    "vitest": "^4.1.10"
   }
 }

@@ -7,11 +7,19 @@ import {
   MentionInputElement,
 } from '@/components/ui/mention-node';
 
-export const MentionKit = [
+export const MentionPersistedKit = [
   MentionPlugin.configure({
     options: {
       triggerPreviousCharPattern: /^$|^[\s"']$/,
     },
   }).withComponent(MentionElement),
+];
+
+export const MentionTransientKit = [
   MentionInputPlugin.withComponent(MentionInputElement),
+];
+
+export const MentionKit = [
+  ...MentionPersistedKit,
+  ...MentionTransientKit,
 ];

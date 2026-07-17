@@ -4,6 +4,20 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+const bundledDependencies = ['@emoji-mart/data']
+
+const isBundledDependency = (id: string): boolean =>
+  bundledDependencies.some(
+    (dependency) => id === dependency || id.startsWith(`${dependency}/`)
+  )
+
+const isExternalDependency = (id: string): boolean =>
+  !isBundledDependency(id) &&
+  !id.startsWith('.') &&
+  !id.startsWith('\0') &&
+  !id.startsWith('@/') &&
+  !path.isAbsolute(id)
+
 export default defineConfig({
   publicDir: false,
   plugins: [
@@ -17,22 +31,19 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/RichEditor.tsx'), // targeting export file
-      name: 'RichEditor',
-      formats: ['es', 'umd'], // two export format
-      fileName: (format) => `rich-editor.${format}.js`
+      entry: {
+        'diff-viewer': path.resolve(__dirname, 'src/RichEditorDiff.tsx'),
+        'rich-editor': path.resolve(__dirname, 'src/RichEditor.tsx'),
+      },
+      cssFileName: 'rich-editor',
+      formats: ['es'],
+      fileName: (_format, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: isExternalDependency,
       output: {
         exports: 'named',
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM'
-        },
-        // disable hash name
-        entryFileNames: `rich-editor.[format].js`,
-        chunkFileNames: `[name].js`,
+        chunkFileNames: `chunks/[name]-[hash].js`,
         assetFileNames: `[name].[ext]`
       }
     },

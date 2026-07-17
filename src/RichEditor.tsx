@@ -1,19 +1,11 @@
 import * as React from "react";
 
-import type { Value } from "platejs";
-
 import "./global.css";
 
 import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
 import { Plate, usePlateEditor } from "platejs/react";
 
 import { EditorKit } from "@/components/editor/editor-kit";
-import {
-	DiffEditorKit,
-	computeRichEditorDiffStats as computeDiffStats,
-	computeRichEditorDiffValue,
-	type TRichEditorDiffStats,
-} from "@/components/editor/plugins/diff-kit";
 import {
 	getQuickActionsInset,
 	getVisibleQuickActionItems,
@@ -28,11 +20,12 @@ import { LinkToolbarButton } from "@/components/ui/link-toolbar-button";
 import { MarkToolbarButton } from "@/components/ui/mark-toolbar-button";
 import { I18nProvider, type TLocale, useI18n } from "@/i18n";
 import { MentionProvider, type TMentionOption } from "@/mention-context";
+import type { TRichEditorValue } from "@/types";
 
-const cloneValue = (value: Value): Value => JSON.parse(JSON.stringify(value));
-export type TRichEditorValue = Value;
+const cloneValue = (value: TRichEditorValue): TRichEditorValue =>
+	JSON.parse(JSON.stringify(value));
 
-const defaultValue: Value = [
+const defaultValue: TRichEditorValue = [
 	{
 		type: "h1",
 		children: [{ text: "Plate Editor" }],
@@ -94,19 +87,10 @@ export type TRichEditorProps = {
 	quickActions?: TRichEditorQuickActionsConfig;
 };
 
-export type TRichEditorDiffProps = {
-	previousValue: TRichEditorValue;
-	currentValue: TRichEditorValue;
-	className?: string;
-	locale?: TLocale;
-	mentionOptions?: TMentionOption[];
-	onMentionSearch?: (query: string) => void;
-};
-
 type TRichEditorInnerProps = {
-	value?: Value;
-	defaultValue: Value;
-	onChange?: (value: Value) => void;
+	value?: TRichEditorValue;
+	defaultValue: TRichEditorValue;
+	onChange?: (value: TRichEditorValue) => void;
 	className?: string;
 	debugMode: boolean;
 	quickActions?: TRichEditorQuickActionsConfig;
@@ -129,14 +113,14 @@ function RichEditorInner({
 			} as React.CSSProperties)
 		: undefined;
 	const isControlled = controlledValue !== undefined;
-	const [value, setValue] = React.useState<Value>(() => {
+	const [value, setValue] = React.useState<TRichEditorValue>(() => {
 		if (isControlled) return controlledValue;
 		return defaultValue;
 	});
 	const currentValue = isControlled ? controlledValue : value;
 	const [jsonInput, setJsonInput] = React.useState("");
 	const [jsonError, setJsonError] = React.useState("");
-	const [readOnlyValue, setReadOnlyValue] = React.useState<Value>(() =>
+	const [readOnlyValue, setReadOnlyValue] = React.useState<TRichEditorValue>(() =>
 		cloneValue(currentValue),
 	);
 
@@ -164,7 +148,7 @@ function RichEditorInner({
 
 	const handleRenderReadonly = React.useCallback(() => {
 		try {
-			const parsed = JSON.parse(jsonInput) as Value;
+			const parsed = JSON.parse(jsonInput) as TRichEditorValue;
 			setReadOnlyValue(parsed);
 			setJsonError("");
 		} catch {
@@ -267,36 +251,6 @@ function RichEditorInner({
 	);
 }
 
-function RichEditorDiffInner({
-	previousValue,
-	currentValue,
-	className,
-}: Pick<TRichEditorDiffProps, "previousValue" | "currentValue" | "className">) {
-	const diffValue = React.useMemo(
-		() => computeRichEditorDiffValue(previousValue, currentValue) as Value,
-		[previousValue, currentValue],
-	);
-
-	const editor = usePlateEditor({
-		plugins: DiffEditorKit,
-		value: diffValue,
-	});
-
-	React.useEffect(() => {
-		editor.tf.setValue(diffValue);
-	}, [diffValue, editor]);
-
-	return (
-		<div className={className}>
-			<Plate editor={editor} readOnly>
-				<EditorContainer>
-					<Editor />
-				</EditorContainer>
-			</Plate>
-		</div>
-	);
-}
-
 export default function RichEditor({
 	value,
 	defaultValue: defaultValueProp = defaultValue,
@@ -326,34 +280,4 @@ export default function RichEditor({
 		</I18nProvider>
 	);
 }
-
-export function RichEditorDiff({
-	previousValue,
-	currentValue,
-	className,
-	locale,
-	mentionOptions,
-	onMentionSearch,
-}: TRichEditorDiffProps) {
-	return (
-		<I18nProvider locale={locale}>
-			<MentionProvider
-				mentionOptions={mentionOptions}
-				onMentionSearch={onMentionSearch}
-			>
-				<RichEditorDiffInner
-					previousValue={previousValue}
-					currentValue={currentValue}
-					className={className}
-				/>
-			</MentionProvider>
-		</I18nProvider>
-	);
-}
-
-export const computeRichEditorDiffStats = (
-	previousValue: TRichEditorValue,
-	currentValue: TRichEditorValue,
-): TRichEditorDiffStats => computeDiffStats(previousValue, currentValue);
-
-export type { TRichEditorDiffStats };
+export type { TRichEditorValue } from "@/types";

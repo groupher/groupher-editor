@@ -3,7 +3,6 @@
 import type { Descendant } from 'platejs';
 
 import {
-  computeDiff,
   type DiffOperation,
   withGetFragmentExcludeDiff,
 } from '@platejs/diff';
@@ -11,23 +10,42 @@ import { createPlatePlugin } from 'platejs/react';
 
 import { cn } from '@/lib/utils';
 
-import { EditorKit } from '../editor-kit';
+import { PersistedEditorKit } from '../persisted-editor-kit';
 
 type TDiffNode = Descendant & {
   children?: TDiffNode[];
   diff?: true;
   diffOperation?: DiffOperation;
   text?: string;
+  type?: string;
 };
 
-export type TRichEditorDiffStats = {
-  additions: number;
-  deletions: number;
+const INVISIBLE_TEXT_PATTERN = /[\u200B-\u200D\u2060\uFEFF]/g;
+
+const isVisuallyEmptyTextNode = (node: TDiffNode): boolean =>
+  typeof node.text === 'string' &&
+  node.text.replace(INVISIBLE_TEXT_PATTERN, '').trim().length === 0;
+
+export const shouldStyleDiffOperation = (
+  node: Descendant | undefined,
+  isTextNode: boolean
+): boolean => {
+  const diffNode = node as TDiffNode | undefined;
+  const operation = diffNode?.diffOperation;
+
+  if (!operation) return false;
+
+  return !(
+    operation.type === 'update' &&
+    !isTextNode &&
+    diffNode.type === 'p' &&
+    diffNode.children?.every(isVisuallyEmptyTextNode)
+  );
 };
 
 const diffClassMap: Record<DiffOperation['type'], string> = {
   delete:
-    'bg-red-100/70 text-red-950 line-through decoration-red-600 decoration-2 dark:bg-red-950/40 dark:text-red-100',
+    'bg-red-100/70 text-red-950 line-through decoration-red-600 decoration-1 dark:bg-red-950/40 dark:text-red-100',
   insert:
     'bg-emerald-100/80 text-emerald-950 dark:bg-emerald-950/40 dark:text-emerald-100',
   update:
@@ -36,11 +54,11 @@ const diffClassMap: Record<DiffOperation['type'], string> = {
 
 const diffElementClassMap: Record<DiffOperation['type'], string> = {
   delete:
-    'border-l-2 border-red-400 pl-2 -ml-3 bg-red-50/60 dark:bg-red-950/20',
+    '-mx-3 border-l-2 border-red-400 bg-red-50/60 px-3 dark:bg-red-950/20',
   insert:
-    'border-l-2 border-emerald-500 pl-2 -ml-3 bg-emerald-50/60 dark:bg-emerald-950/20',
+    '-mx-3 border-l-2 border-emerald-500 bg-emerald-50/60 px-3 dark:bg-emerald-950/20',
   update:
-    'border-l-2 border-sky-400 pl-2 -ml-3 bg-sky-50/60 dark:bg-sky-950/20',
+    '-mx-3 border-l-2 border-sky-400 bg-sky-50/60 px-3 dark:bg-sky-950/20',
 };
 
 const DiffStylePlugin = createPlatePlugin({
@@ -54,6 +72,8 @@ const DiffStylePlugin = createPlatePlugin({
         if (!operation) return props;
 
         const isTextNode = text !== undefined;
+        if (!shouldStyleDiffOperation(node, isTextNode)) return props;
+
         const operationClass = isTextNode
           ? diffClassMap[operation.type]
           : diffElementClassMap[operation.type];
@@ -68,47 +88,4 @@ const DiffStylePlugin = createPlatePlugin({
   },
 }).overrideEditor(withGetFragmentExcludeDiff);
 
-export const DiffEditorKit = [...EditorKit, DiffStylePlugin];
-
-export const computeRichEditorDiffValue = (
-  previousValue: Descendant[],
-  currentValue: Descendant[],
-): Descendant[] => computeDiff(previousValue, currentValue);
-
-const countTextLength = (node: TDiffNode): number => {
-  if (typeof node.text === 'string') return node.text.length;
-
-  return node.children?.reduce((sum, child) => sum + countTextLength(child), 0) ?? 0;
-};
-
-const collectDiffStats = (
-  nodes: TDiffNode[],
-  stats: TRichEditorDiffStats,
-): TRichEditorDiffStats => {
-  for (const node of nodes) {
-    if (node.diffOperation?.type === 'insert') {
-      stats.additions += countTextLength(node);
-      continue;
-    }
-
-    if (node.diffOperation?.type === 'delete') {
-      stats.deletions += countTextLength(node);
-      continue;
-    }
-
-    if (node.children) {
-      collectDiffStats(node.children, stats);
-    }
-  }
-
-  return stats;
-};
-
-export const computeRichEditorDiffStats = (
-  previousValue: Descendant[],
-  currentValue: Descendant[],
-): TRichEditorDiffStats => {
-  const diffValue = computeRichEditorDiffValue(previousValue, currentValue) as TDiffNode[];
-
-  return collectDiffStats(diffValue, { additions: 0, deletions: 0 });
-};
+export const DiffEditorKit = [...PersistedEditorKit, DiffStylePlugin];

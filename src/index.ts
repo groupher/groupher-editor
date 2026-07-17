@@ -1,7 +1,9 @@
 import type { ComponentType, ReactNode } from "react";
-import type { TElement, Value } from "platejs";
+import type { TElement } from "platejs";
 
-export type TRichEditorValue = Value;
+import type { TRichEditorValue } from "./types";
+
+export type { TRichEditorValue } from "./types";
 export type TRichEditorLocale = "en" | "zh-CN";
 
 export type TRichEditorMentionOption = {
@@ -79,27 +81,6 @@ export type TRichEditorProps = {
 	quickActions?: TRichEditorQuickActionsConfig;
 };
 
-export type TRichEditorDiffProps = {
-	previousValue: TRichEditorValue;
-	currentValue: TRichEditorValue;
-	className?: string;
-	locale?: TRichEditorLocale;
-	mentionOptions?: TRichEditorMentionOption[];
-	onMentionSearch?: (query: string) => void;
-};
-
-export type TRichEditorDiffStats = {
-	additions: number;
-	deletions: number;
-};
-
 declare const RichEditor: ComponentType<TRichEditorProps>;
 
 export default RichEditor;
-
-export declare const RichEditorDiff: ComponentType<TRichEditorDiffProps>;
-
-export declare const computeRichEditorDiffStats: (
-	previousValue: TRichEditorValue,
-	currentValue: TRichEditorValue,
-) => TRichEditorDiffStats;
