@@ -15,12 +15,13 @@ export function LinkElement({ element, children, ...props }: PlateElementProps) 
     <PlateElement
       {...props}
       element={element}
-      asChild
+      as="a"
+      href={url}
+      rel="noreferrer"
+      target="_blank"
       className={cn('text-brand underline decoration-brand/60 underline-offset-2')}
     >
-      <a href={url} rel="noreferrer" target="_blank">
-        {children}
-      </a>
+      {children}
     </PlateElement>
   );
 }
