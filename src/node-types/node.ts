@@ -65,7 +65,7 @@ export type TRichEditorMarkdownImportResult = {
   value: TRichEditorCanonicalValue;
 };
 
-export declare const RICH_EDITOR_SCHEMA_VERSION: 1;
+export declare const RICH_EDITOR_SCHEMA_VERSION: 2;
 
 export declare const createNodeEditor: (value?: unknown) => SlateEditor;
 

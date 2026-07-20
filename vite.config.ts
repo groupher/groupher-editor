@@ -34,6 +34,7 @@ export default defineConfig({
       entry: {
         'diff-viewer': path.resolve(__dirname, 'src/RichEditorDiff.tsx'),
         'rich-editor': path.resolve(__dirname, 'src/RichEditor.tsx'),
+        'static': path.resolve(__dirname, 'src/RichEditorStatic.tsx'),
       },
       cssFileName: 'rich-editor',
       formats: ['es'],

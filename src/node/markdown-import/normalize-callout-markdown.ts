@@ -8,8 +8,8 @@ type TCalloutAttributes = Record<string, string>;
 type TMdxCalloutSource = 'fumadocs' | 'mintlify' | 'nextra';
 
 type TMintlifyTitledContainer = {
-  component: 'Card' | 'Step' | 'Tab';
-  headingLevel: 3 | 4;
+  component: 'Card' | 'Tab';
+  headingLevel: 4;
 };
 
 type TPortableCallout = {
@@ -70,16 +70,11 @@ const LUCIDE_ICON_ALIASES: Partial<
 };
 
 const MINTLIFY_TITLED_CONTAINERS: TMintlifyTitledContainer[] = [
-  { component: 'Step', headingLevel: 3 },
   { component: 'Tab', headingLevel: 4 },
   { component: 'Card', headingLevel: 4 },
 ];
 
-const MINTLIFY_GROUP_CONTAINERS = [
-  'Steps',
-  'Tabs',
-  'CardGroup',
-] as const;
+const MINTLIFY_GROUP_CONTAINERS = ['Tabs', 'CardGroup'] as const;
 
 const escapeAttribute = (value: string): string =>
   value.replaceAll('&', '&amp;').replaceAll('"', '&quot;');

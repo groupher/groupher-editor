@@ -35,7 +35,7 @@ const pluginKeys = (plugins: typeof BaseEditorKit) =>
 
 describe('Node codec contract', () => {
   it('uses an explicit schema version', () => {
-    expect(RICH_EDITOR_SCHEMA_VERSION).toBe(1);
+    expect(RICH_EDITOR_SCHEMA_VERSION).toBe(2);
   });
 
   it('keeps browser and Node persisted schema registrations aligned', () => {

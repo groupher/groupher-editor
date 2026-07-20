@@ -1,8 +1,8 @@
 # Markdown Import
 
 本文档说明如何通过 `@groupher/rich-editor/node` 把 Markdown 或文档平台的
-Callout、Accordion 和结构化 Markdown 转换为 Groupher 使用的 canonical Plate
-JSON。
+Callout、Accordion、Steps 和结构化 Markdown 转换为 Groupher 使用的 canonical
+Plate JSON。
 
 ## 基本流程
 
@@ -19,9 +19,9 @@ canonical Plate JSON + diagnostics
 ```
 
 兼容层负责把平台专属容器转换为 Plate 可以稳定解析的 Markdown/MDX。普通
-Markdown 仍由 Plate 解析；Mintlify 的 Steps、Tab、Card、Tooltip 和 metadata
-head 会在反序列化前展开或移除，避免容器缩进被误判成代码块。Accordion 不再
-降级为标题，而是进入通用的 `accordion_group` 节点结构。
+Markdown 仍由 Plate 解析；Mintlify 的 Tab、Card、Tooltip 和 metadata head 会在
+反序列化前展开或移除，避免容器缩进被误判成代码块。Accordion 和 Steps 不再
+降级为普通标题，而是分别进入通用的 `accordion_group` 和 `steps` 节点结构。
 
 Plate 原生的 fenced code block 和 GFM table 会保留为 `code_block` / `code_line`
 以及 `table` / `tr` / `td` / `th`，进入与浏览器编辑器一致的持久化 schema。
@@ -56,10 +56,11 @@ const result = deserializeMarkdown(groupherMarkdown, {
 ```
 
 默认模式只承诺解析 Groupher portable Markdown，例如小写的
-`<callout variant="info">...</callout>` 和 `<accordion_group>...</accordion_group>`。
-PascalCase 的 `<AccordionGroup>/<Accordion>` 以及 HTML `<details>/<summary>`
-属于跨平台、低歧义结构，因此不依赖具体 `source` 也会被识别；其他厂商语法
-不会自动猜测。
+`<callout variant="info">...</callout>`、`<accordion_group>...</accordion_group>`
+和 `<steps><step title="...">...</step></steps>`。PascalCase 的
+`<AccordionGroup>/<Accordion>`、`<Steps>/<Step>` 以及 HTML
+`<details>/<summary>` 属于跨平台、低歧义结构，因此不依赖具体 `source` 也会被
+识别；其他厂商语法不会自动猜测。
 
 ## 支持的来源
 
@@ -199,6 +200,31 @@ accordion_group
 Portable Markdown 使用小写节点名保存完整层级，浏览器和 Node/static 插件共用
 同一套 schema。静态 HTML 使用原生 `<details>/<summary>` 输出。
 
+## Steps AST
+
+Mintlify 的 `<Steps>/<Step>` 会收敛为四层语义结构：
+
+```text
+steps
+└── step
+    ├── step_title
+    │   └── text
+    └── step_content
+        └── paragraph / list / callout / code_block / table / ...
+```
+
+`Step` 的 `title` 属性进入 `step_title`，块内容进入 `step_content`。列表、inline
+code、Callout 等富文本块仍属于当前 Step，不会被提升到 Steps 外层；空的自闭合
+Step 会获得一个空段落，使节点始终可编辑。
+
+默认序号按 Step 顺序生成；`stepNumber` 可以覆盖单条显示序号。`Steps` 和 `Step`
+上的其他 JSON-safe 属性会保留，源 `id` 会以 `anchorId` 持久化，避免被 canonical
+过程当作临时 Slate id 清除；`noAnchor` 会禁止静态 HTML 输出锚点。
+
+导入兼容 PascalCase `<Steps>/<Step>`，portable Markdown 统一输出小写
+`<steps>/<step>`。静态 HTML 使用原生 `<ol>/<li>`，Step 标题是结构内标题而不是
+文档 heading，因此不会进入 TOC。
+
 ## Lucide 图标
 
 Plate 本身不提供命名图标库。Groupher 对已知厂商图标使用 Lucide 名称：
@@ -251,6 +277,9 @@ tests/fixtures/markdown-compat/accordion/
 ├── inputs/
 └── expected/
 ```
+
+Steps 的结构、富文本作用域、Markdown 往返、TOC 隔离和静态 HTML 输出当前由
+`tests/markdown-import-structural-blocks.test.ts` 覆盖。
 
 测试会遍历 manifest，并执行：
 

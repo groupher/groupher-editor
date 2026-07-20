@@ -8,6 +8,7 @@ import { BaseLinkKit } from '@/components/editor/plugins/link-base-kit';
 import { BaseListKit } from '@/components/editor/plugins/list-base-kit';
 import { MarkdownKit } from '@/components/editor/plugins/markdown-kit';
 import { BaseMentionKit } from '@/components/editor/plugins/mention-base-kit';
+import { BaseStepsKit } from '@/components/editor/plugins/steps-base-kit';
 import { BaseTableKit } from '@/components/editor/plugins/table-base-kit';
 import { BaseToggleKit } from '@/components/editor/plugins/toggle-base-kit';
 
@@ -19,6 +20,7 @@ export const BaseEditorKit = [
   ...BaseListKit,
   ...BaseTableKit,
   ...BaseToggleKit,
+  ...BaseStepsKit,
   ...BaseAccordionKit,
   ...BaseCalloutKit,
   ...BaseLinkKit,

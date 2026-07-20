@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.30",
+  "version": "0.0.34",
   "main": "dist/rich-editor.js",
   "module": "dist/rich-editor.js",
   "types": "dist/index.d.ts",
@@ -21,6 +21,11 @@
       "import": "./dist/diff-viewer.js",
       "default": "./dist/diff-viewer.js"
     },
+    "./static": {
+      "types": "./dist/static.d.ts",
+      "import": "./dist/static.js",
+      "default": "./dist/static.js"
+    },
     "./node": {
       "types": "./dist/node.d.ts",
       "import": "./dist/node.js",
@@ -39,7 +44,7 @@
     "clean": "rm -rf dist",
     "build:diff": "vite build --config vite.diff.config.ts && tsc --project tsconfig.diff-types.json",
     "typecheck": "tsc",
-    "build:types": "tsc --project tsconfig.types.json && tsc --project tsconfig.diff-viewer-types.json",
+    "build:types": "tsc --project tsconfig.types.json && tsc --project tsconfig.diff-viewer-types.json && tsc --project tsconfig.static-types.json",
     "build:vite": "vite build",
     "build:node": "vite build --config vite.node.config.ts && tsc --project tsconfig.node-types.json",
     "release": "npm publish --access public",

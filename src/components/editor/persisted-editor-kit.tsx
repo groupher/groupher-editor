@@ -9,6 +9,7 @@ import { IndentKit } from '@/components/editor/plugins/indent-kit';
 import { LinkKit } from '@/components/editor/plugins/link-kit';
 import { ListKit } from '@/components/editor/plugins/list-kit';
 import { MentionPersistedKit } from '@/components/editor/plugins/mention-kit';
+import { StepsKit } from '@/components/editor/plugins/steps-kit';
 import { TableKit } from '@/components/editor/plugins/table-kit';
 import { ToggleKit } from '@/components/editor/plugins/toggle-kit';
 
@@ -20,6 +21,7 @@ export const PersistedEditorKit = [
   ...ListKit,
   ...TableKit,
   ...ToggleKit,
+  ...StepsKit,
   ...AccordionKit,
   ...CalloutKit,
   ...LinkKit,

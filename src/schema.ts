@@ -1,4 +1,4 @@
-export const RICH_EDITOR_SCHEMA_VERSION = 1 as const;
+export const RICH_EDITOR_SCHEMA_VERSION = 2 as const;
 
 export const RICH_EDITOR_ELEMENT_TYPES = [
   'p',
@@ -15,6 +15,10 @@ export const RICH_EDITOR_ELEMENT_TYPES = [
   'a',
   'mention',
   'toggle',
+  'steps',
+  'step',
+  'step_title',
+  'step_content',
   'accordion_group',
   'accordion',
   'accordion_title',

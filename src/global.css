@@ -184,6 +184,149 @@
     padding-right: var(--rich-editor-quick-action-space, 216px);
   }
 
+  .rich-editor-steps {
+    counter-reset: rich-editor-step;
+    margin-block: 1.5rem;
+    padding: 0;
+  }
+
+  .rich-editor-step {
+    counter-increment: rich-editor-step;
+    position: relative;
+    padding: 0 0 1.5rem;
+    list-style: none;
+  }
+
+  .rich-editor-step-details {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    column-gap: 1rem;
+  }
+
+  .rich-editor-step-heading {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    column-gap: 1rem;
+    min-height: 2rem;
+    align-items: center;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .rich-editor-step-heading::-webkit-details-marker {
+    display: none;
+  }
+
+  .rich-editor-step-heading::marker {
+    content: "";
+  }
+
+  .rich-editor-step-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--foreground);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .rich-editor-step-marker:empty::before {
+    content: counter(rich-editor-step);
+  }
+
+  .rich-editor-step::after {
+    content: "";
+    position: absolute;
+    top: 2.5rem;
+    bottom: 0.5rem;
+    left: calc(1rem - 0.5px);
+    width: 1px;
+    background: var(--border);
+  }
+
+  .rich-editor-step:last-child {
+    padding-bottom: 0;
+  }
+
+  .rich-editor-step:last-child::after {
+    display: none;
+  }
+
+  .rich-editor-step-title {
+    display: flex;
+    min-height: 2rem;
+    align-items: center;
+    color: var(--foreground);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .rich-editor-step-title-row {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+  }
+
+  .rich-editor-step-collapse-pill {
+    display: none;
+    min-width: 1.75rem;
+    height: 1rem;
+    margin: 0 0 0.2rem 0.5rem;
+    padding: 0 0.45rem 0.22rem;
+    align-items: flex-end;
+    justify-content: center;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .rich-editor-step-collapsed .rich-editor-step-collapse-pill,
+  details.rich-editor-step-details:not([open]) .rich-editor-step-collapse-pill {
+    display: inline-flex;
+  }
+
+  .rich-editor-step-content {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    padding-top: 0.75rem;
+  }
+
+  .rich-editor-step-collapsed .rich-editor-step-content {
+    display: none;
+  }
+
+  .rich-editor-steps-title-h2 .rich-editor-step-title,
+  .rich-editor-step-title-h2 .rich-editor-step-title {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .rich-editor-steps-title-h3 .rich-editor-step-title,
+  .rich-editor-step-title-h3 .rich-editor-step-title {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .rich-editor-steps-title-h4 .rich-editor-step-title,
+  .rich-editor-step-title-h4 .rich-editor-step-title {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
   .rich-editor-quick-action-icon svg {
     width: 100%;
     height: 100%;

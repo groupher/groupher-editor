@@ -22,6 +22,10 @@ const diffViewerSource = await readFile(
   new URL('../dist/diff-viewer.js', import.meta.url),
   'utf8'
 );
+const staticSource = await readFile(
+  new URL('../dist/static.js', import.meta.url),
+  'utf8'
+);
 const indexDeclarationSource = await readFile(
   new URL('../dist/index.d.ts', import.meta.url),
   'utf8'
@@ -36,6 +40,10 @@ const editorApiDeclarationSource = await readFile(
 );
 const diffViewerDeclarationSource = await readFile(
   new URL('../dist/diff-viewer.d.ts', import.meta.url),
+  'utf8'
+);
+const staticDeclarationSource = await readFile(
+  new URL('../dist/static.d.ts', import.meta.url),
   'utf8'
 );
 const declarationSources = await Promise.all(
@@ -53,6 +61,11 @@ assert.deepEqual(packageJson.exports['./diff-viewer'], {
   types: './dist/diff-viewer.d.ts',
   import: './dist/diff-viewer.js',
   default: './dist/diff-viewer.js',
+});
+assert.deepEqual(packageJson.exports['./static'], {
+  types: './dist/static.d.ts',
+  import: './dist/static.js',
+  default: './dist/static.js',
 });
 assert.deepEqual(packageJson.exports['./node'], {
   types: './dist/node.d.ts',
@@ -77,6 +90,7 @@ assert.doesNotMatch(
   diffViewerSource,
   /@emoji-mart|@platejs\/emoji|@platejs\/markdown|@platejs\/slash-command|remark-gfm/
 );
+assert.doesNotMatch(staticSource, /(?:platejs|@platejs\/[^'"\n]+)\/react/);
 declarationSources.forEach((source) => {
   assert.doesNotMatch(source, /from ['"]@\//);
 });
@@ -106,6 +120,7 @@ assert.doesNotMatch(editorApiDeclarationSource, /selectionBehavior/);
 assert.doesNotMatch(editorApiDeclarationSource, /document-edge/);
 assert.match(indexDeclarationSource, /ForwardRefExoticComponent/);
 assert.match(diffViewerDeclarationSource, /diffValue: TRichEditorDiffValue/);
+assert.match(staticDeclarationSource, /value: TRichEditorValue/);
 assert.doesNotMatch(
   diffViewerDeclarationSource,
   /previousValue|currentValue|from ['"]@\//
@@ -127,8 +142,41 @@ const renderedDiff = renderToString(
 );
 assert.match(renderedDiff, /SSR diff/);
 
+const staticViewer = await import('@groupher/rich-editor/static');
+assert.equal(typeof staticViewer.RichEditorStatic, 'function');
+const renderedStatic = renderToString(
+  createElement(staticViewer.RichEditorStatic, {
+    value: [
+      {
+        type: 'steps',
+        children: [
+          {
+            type: 'step',
+            stepNumber: 1,
+            children: [
+              {
+                type: 'step_title',
+                children: [{ text: 'Publish steps' }],
+              },
+              {
+                type: 'step_content',
+                children: [
+                  { type: 'p', children: [{ text: 'Static content' }] },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  })
+);
+assert.match(renderedStatic, /<details[^>]*rich-editor-step-details[^>]*open/);
+assert.match(renderedStatic, /<summary[^>]*rich-editor-step-heading/);
+assert.match(renderedStatic, /rich-editor-step-collapse-pill/);
+
 const codec = await import('@groupher/rich-editor/node');
-assert.equal(codec.RICH_EDITOR_SCHEMA_VERSION, 1);
+assert.equal(codec.RICH_EDITOR_SCHEMA_VERSION, 2);
 assert.equal(typeof codec.createNodeEditor, 'function');
 assert.equal(typeof codec.deserializeMarkdown, 'function');
 assert.equal(typeof codec.validateValue, 'function');
