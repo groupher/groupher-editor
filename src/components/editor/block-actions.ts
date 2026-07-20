@@ -99,16 +99,6 @@ export const getVisibleQuickActionItems = (
 	return items.slice(0, Math.max(0, visibleCount));
 };
 
-export const getQuickActionsInset = (
-	config?: TRichEditorQuickActionsConfig,
-) => {
-	const visibleCount = getVisibleQuickActionItems(config).length;
-
-	if (visibleCount === 0) return 0;
-
-	return 56 + visibleCount * 40;
-};
-
 export const isListActionValue = (value: string) => value in listValueMap;
 
 export const setBlockType = (

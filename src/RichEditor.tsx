@@ -7,11 +7,7 @@ import { Plate, usePlateEditor } from "platejs/react";
 
 import { EditorKit } from "@/components/editor/editor-kit";
 import { insertContent } from "@/commands/insert-content";
-import {
-	getQuickActionsInset,
-	getVisibleQuickActionItems,
-	type TRichEditorQuickActionsConfig,
-} from "@/components/editor/block-actions";
+import type { TRichEditorQuickActionsConfig } from "@/components/editor/block-actions";
 import { BlockActionRail } from "@/components/ui/block-action-rail";
 import { BlockPlaceholder } from "@/components/ui/block-placeholder";
 import { Button } from "@/components/ui/button";
@@ -109,13 +105,6 @@ const RichEditorInner = React.forwardRef<
 	ref,
 ) {
 	const i18n = useI18n();
-	const visibleQuickActions = getVisibleQuickActionItems(quickActions);
-	const hasQuickActions = visibleQuickActions.length > 0;
-	const quickActionStyle = hasQuickActions
-		? ({
-				"--rich-editor-quick-action-space": `${getQuickActionsInset(quickActions)}px`,
-			} as React.CSSProperties)
-		: undefined;
 	const [jsonInput, setJsonInput] = React.useState("");
 	const [jsonError, setJsonError] = React.useState("");
 	const [readOnlyValue, setReadOnlyValue] = React.useState<TRichEditorValue>(() =>
@@ -202,13 +191,8 @@ const RichEditorInner = React.forwardRef<
 					<LinkToolbarButton />
 				</FloatingToolbar>
 
-				<EditorContainer style={quickActionStyle}>
-					<Editor
-						className={
-							hasQuickActions ? "rich-editor-with-quick-actions" : undefined
-						}
-						aria-placeholder={i18n.placeholder}
-					/>
+				<EditorContainer>
+					<Editor aria-placeholder={i18n.placeholder} />
 					<BlockPlaceholder text={i18n.placeholder} />
 					<BlockActionRail config={quickActions} />
 				</EditorContainer>
