@@ -1,0 +1,59 @@
+{
+  "diagnostics": [],
+  "value": [
+    {
+      "type": "accordion_group",
+      "children": [
+        {
+          "type": "accordion",
+          "children": [
+            {
+              "type": "accordion_title",
+              "children": [{ "text": "Can I use the same domain twice?" }]
+            },
+            {
+              "type": "accordion_content",
+              "children": [
+                {
+                  "type": "p",
+                  "children": [
+                    { "text": "A domain can belong to one published project." }
+                  ]
+                },
+                {
+                  "type": "callout",
+                  "variant": "note",
+                  "children": [{ "text": "Disconnect it before moving it." }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "accordion",
+          "children": [
+            {
+              "type": "accordion_title",
+              "children": [
+                { "text": "Where are connected domains listed?" }
+              ]
+            },
+            {
+              "type": "accordion_content",
+              "children": [
+                {
+                  "type": "p",
+                  "children": [
+                    { "text": "Open " },
+                    { "text": "Project settings", "bold": true },
+                    { "text": " and select Domains." }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

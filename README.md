@@ -31,6 +31,7 @@ import {
   RICH_EDITOR_SCHEMA_VERSION,
   canonicalizeValue,
   createNodeEditor,
+  deserializeMarkdown,
   extractPlainText,
   extractToc,
   serializeHtmlUnsafe,
@@ -48,6 +49,10 @@ The codec exports:
 
 - `RICH_EDITOR_SCHEMA_VERSION`: explicit persisted schema version.
 - `createNodeEditor(value)`: creates an isolated headless Plate editor.
+- `deserializeMarkdown(markdown, options)`: imports Markdown and normalizes
+  supported documentation-platform Callout syntax to canonical Plate JSON. See
+  [Markdown import](docs/markdown-import.md) for source selection, diagnostics,
+  and examples.
 - `validateValue(value)`: rejects malformed, unknown, and transient nodes with
   structured `code`, `path`, and `nodeType` diagnostics.
 - `canonicalizeValue(value)`: recursively removes `id` and `_id`, removes

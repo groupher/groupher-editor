@@ -26,6 +26,10 @@ const indexDeclarationSource = await readFile(
   new URL('../dist/index.d.ts', import.meta.url),
   'utf8'
 );
+const nodeDeclarationSource = await readFile(
+  new URL('../dist/node.d.ts', import.meta.url),
+  'utf8'
+);
 const editorApiDeclarationSource = await readFile(
   new URL('../dist/editor-api.d.ts', import.meta.url),
   'utf8'
@@ -77,6 +81,8 @@ declarationSources.forEach((source) => {
   assert.doesNotMatch(source, /from ['"]@\//);
 });
 assert.doesNotMatch(indexDeclarationSource, /RichEditorDiff/);
+assert.match(nodeDeclarationSource, /deserializeMarkdown/);
+assert.match(nodeDeclarationSource, /TRichEditorMarkdownImportResult/);
 assert.doesNotMatch(indexDeclarationSource, /\bvalue\?: TRichEditorValue/);
 assert.match(indexDeclarationSource, /TRichEditorHandle/);
 assert.match(editorApiDeclarationSource, /insertContent/);
@@ -124,6 +130,7 @@ assert.match(renderedDiff, /SSR diff/);
 const codec = await import('@groupher/rich-editor/node');
 assert.equal(codec.RICH_EDITOR_SCHEMA_VERSION, 1);
 assert.equal(typeof codec.createNodeEditor, 'function');
+assert.equal(typeof codec.deserializeMarkdown, 'function');
 assert.equal(typeof codec.validateValue, 'function');
 assert.equal(typeof codec.canonicalizeValue, 'function');
 assert.equal(typeof codec.serializeMarkdown, 'function');

@@ -1,0 +1,35 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "children": [
+        { "text": "Use the smallest configuration that solves the problem." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "icon": "⭐",
+      "children": [{ "text": "The migration can run incrementally." }]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "children": [{ "text": "Back up the database before continuing." }]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [{ "text": "This operation cannot be undone." }]
+    },
+    {
+      "type": "callout",
+      "variant": "important",
+      "children": [
+        { "text": "Restart the service after changing this value." }
+      ]
+    }
+  ],
+  "diagnostics": []
+}

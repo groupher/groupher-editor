@@ -1,0 +1,39 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "info",
+      "title": "Release context",
+      "children": [
+        { "text": "This behavior applies to the current release." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "success",
+      "children": [{ "text": "The deployment completed successfully." }]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "children": [{ "text": "Existing sessions will be invalidated." }]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [
+        { "text": "This operation permanently removes the project." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "icon": "library-big",
+      "iconLibrary": "lucide",
+      "children": [
+        { "text": "Read the migration guide before continuing." }
+      ]
+    }
+  ],
+  "diagnostics": []
+}

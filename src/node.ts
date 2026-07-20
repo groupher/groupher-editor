@@ -1,5 +1,6 @@
 export { canonicalizeValue } from '@/node/canonicalize-value';
 export { createNodeEditor } from '@/node/create-node-editor';
+export { deserializeMarkdown } from '@/node/deserialize-markdown';
 export { extractPlainText } from '@/node/extract-plain-text';
 export { extractToc } from '@/node/extract-toc';
 export { RICH_EDITOR_SCHEMA_VERSION } from '@/schema';
@@ -9,6 +10,10 @@ export type {
   TRichEditorCanonicalValue,
   TRichEditorJsonPrimitive,
   TRichEditorJsonValue,
+  TRichEditorMarkdownImportDiagnostic,
+  TRichEditorMarkdownImportOptions,
+  TRichEditorMarkdownImportResult,
+  TRichEditorMarkdownSource,
   TRichEditorTocItem,
   TRichEditorValidationCode,
   TRichEditorValidationDiagnostic,

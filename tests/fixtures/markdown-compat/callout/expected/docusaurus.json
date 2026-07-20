@@ -1,0 +1,33 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "note",
+      "title": "Release context",
+      "children": [{ "text": "This behavior applies to version 3 and later." }]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "children": [{ "text": "Run the focused test suite first." }]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "children": [{ "text": "The cache refreshes automatically." }]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "children": [{ "text": "Existing sessions will be invalidated." }]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [
+        { "text": "Deleting the key removes access immediately." }
+      ]
+    }
+  ],
+  "diagnostics": []
+}

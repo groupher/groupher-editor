@@ -1,0 +1,37 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "info",
+      "children": [
+        { "text": "The default callout provides general information." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "title": "Review required",
+      "children": [
+        { "text": "Check the generated schema before publishing." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [{ "text": "The supplied token is no longer valid." }]
+    },
+    {
+      "type": "callout",
+      "variant": "success",
+      "children": [{ "text": "The import completed successfully." }]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "children": [
+        { "text": "Cache the parsed document between renders." }
+      ]
+    }
+  ],
+  "diagnostics": []
+}

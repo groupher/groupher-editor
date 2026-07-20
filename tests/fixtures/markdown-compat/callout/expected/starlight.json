@@ -1,0 +1,32 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "note",
+      "children": [{ "text": "The index is generated during the build." }]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "title": "Preview locally",
+      "children": [
+        { "text": "Use the development server while editing content." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "children": [
+        { "text": "The next build replaces the existing preview." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [
+        { "text": "This command permanently removes stored data." }
+      ]
+    }
+  ],
+  "diagnostics": []
+}

@@ -11,8 +11,10 @@ import {
 import { getPluginType, KEYS } from 'platejs';
 import remarkGfm from 'remark-gfm';
 
+import { ACCORDION_KEYS } from '@/accordion';
+
 const portableFlowElement = (
-  name: 'callout' | 'toggle'
+  name: string
 ): NonNullable<MdRules['callout']> => ({
   deserialize: (node, decoration, options) => ({
     children: convertChildrenDeserialize(node.children, decoration, options),
@@ -36,6 +38,10 @@ const portableFlowElement = (
 });
 
 const markdownRules: MdRules = {
+  [ACCORDION_KEYS.content]: portableFlowElement(ACCORDION_KEYS.content),
+  [ACCORDION_KEYS.group]: portableFlowElement(ACCORDION_KEYS.group),
+  [ACCORDION_KEYS.item]: portableFlowElement(ACCORDION_KEYS.item),
+  [ACCORDION_KEYS.title]: portableFlowElement(ACCORDION_KEYS.title),
   [KEYS.callout]: portableFlowElement('callout'),
   [KEYS.toggle]: portableFlowElement('toggle'),
 };

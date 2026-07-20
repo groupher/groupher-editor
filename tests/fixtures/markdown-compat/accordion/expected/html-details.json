@@ -1,0 +1,50 @@
+{
+  "diagnostics": [],
+  "value": [
+    {
+      "type": "accordion_group",
+      "children": [
+        {
+          "type": "accordion",
+          "children": [
+            {
+              "type": "accordion_title",
+              "children": [{ "text": "First question" }]
+            },
+            {
+              "type": "accordion_content",
+              "children": [
+                {
+                  "type": "p",
+                  "children": [{ "text": "First answer." }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "accordion",
+          "children": [
+            {
+              "type": "accordion_title",
+              "children": [{ "text": "Second question" }]
+            },
+            {
+              "type": "accordion_content",
+              "children": [
+                {
+                  "type": "p",
+                  "children": [
+                    { "text": "Second answer with " },
+                    { "text": "emphasis", "bold": true },
+                    { "text": "." }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

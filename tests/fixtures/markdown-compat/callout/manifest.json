@@ -1,0 +1,107 @@
+{
+  "component": "callout",
+  "contractVersion": 1,
+  "canonicalVariants": [
+    "note",
+    "info",
+    "tip",
+    "success",
+    "warning",
+    "danger",
+    "important",
+    "custom"
+  ],
+  "cases": [
+    {
+      "id": "mintlify-mdx",
+      "platform": "mintlify",
+      "syntaxFamily": "mdx-jsx",
+      "input": "inputs/mintlify.mdx",
+      "expected": "expected/mintlify.json",
+      "sourceUrl": "https://www.mintlify.com/docs/components/callouts",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "nextra-mdx",
+      "platform": "nextra",
+      "syntaxFamily": "mdx-jsx",
+      "input": "inputs/nextra.mdx",
+      "expected": "expected/nextra.json",
+      "sourceUrl": "https://nextra.site/docs/built-ins/callout",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "docusaurus-container",
+      "platform": "docusaurus",
+      "syntaxFamily": "colon-container",
+      "input": "inputs/docusaurus.md",
+      "expected": "expected/docusaurus.json",
+      "sourceUrl": "https://docusaurus.io/docs/markdown-features/admonitions",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "vitepress-container",
+      "platform": "vitepress",
+      "syntaxFamily": "colon-container",
+      "input": "inputs/vitepress.md",
+      "expected": "expected/vitepress.json",
+      "sourceUrl": "https://vitepress.dev/guide/markdown#custom-containers",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "rspress-container",
+      "platform": "rspress",
+      "syntaxFamily": "colon-container",
+      "input": "inputs/rspress.md",
+      "expected": "expected/rspress.json",
+      "sourceUrl": "https://www.rspress.dev/guide/use-mdx/container",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "github-alert",
+      "platform": "github",
+      "supportedBy": ["nextra", "rspress"],
+      "syntaxFamily": "github-alert",
+      "input": "inputs/github-alert.md",
+      "expected": "expected/github-alert.json",
+      "sourceUrl": "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "fumadocs-mdx",
+      "platform": "fumadocs",
+      "syntaxFamily": "mdx-jsx",
+      "input": "inputs/fumadocs.mdx",
+      "expected": "expected/fumadocs.json",
+      "sourceUrl": "https://www.fumadocs.dev/docs/markdown#callouts",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "mkdocs-material-admonition",
+      "platform": "mkdocs-material",
+      "syntaxFamily": "mkdocs-admonition",
+      "input": "inputs/mkdocs-material.md",
+      "expected": "expected/mkdocs-material.json",
+      "sourceUrl": "https://squidfunk.github.io/mkdocs-material/reference/admonitions/",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "gitbook-hint",
+      "platform": "gitbook",
+      "syntaxFamily": "liquid-block",
+      "input": "inputs/gitbook.md",
+      "expected": "expected/gitbook.json",
+      "sourceUrl": "https://gitbook.com/docs/creating-content/blocks/hint",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "starlight-aside",
+      "platform": "starlight",
+      "syntaxFamily": "colon-container",
+      "input": "inputs/starlight.md",
+      "expected": "expected/starlight.json",
+      "sourceUrl": "https://starlight.astro.build/guides/authoring-content/#asides",
+      "verifiedAt": "2026-07-20"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "component": "accordion_group",
+  "contractVersion": 1,
+  "nodeTypes": [
+    "accordion_group",
+    "accordion",
+    "accordion_title",
+    "accordion_content"
+  ],
+  "cases": [
+    {
+      "id": "mintlify-accordion-group",
+      "input": "inputs/mintlify.mdx",
+      "expected": "expected/mintlify.json",
+      "platform": "mintlify",
+      "sourceUrl": "https://www.mintlify.com/docs/components/accordions",
+      "syntaxFamily": "mdx-jsx",
+      "verifiedAt": "2026-07-20"
+    },
+    {
+      "id": "html-consecutive-details",
+      "input": "inputs/html-details.md",
+      "expected": "expected/html-details.json",
+      "platform": "groupher",
+      "sourceUrl": "https://html.spec.whatwg.org/multipage/interactive-elements.html#the-details-element",
+      "syntaxFamily": "html-details",
+      "verifiedAt": "2026-07-20"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "note",
+      "children": [{ "text": "Additional context for this task." }]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "children": [{ "text": "Review the configuration before continuing." }]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "children": [
+        { "text": "This feature is available in the current release." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "children": [
+        { "text": "Keep the generated files out of source control." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "success",
+      "children": [{ "text": "The deployment completed successfully." }]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [
+        { "text": "This action permanently deletes the workspace." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "custom",
+      "icon": "key",
+      "iconLibrary": "lucide",
+      "children": [
+        { "text": "This callout uses vendor presentation properties." }
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "code": "unsupported_attribute",
+      "severity": "warning",
+      "path": [6],
+      "attribute": "color",
+      "message": "Mintlify Callout color is presentation-only and is not persisted."
+    },
+    {
+      "code": "unsupported_attribute",
+      "severity": "warning",
+      "path": [6],
+      "attribute": "iconType",
+      "message": "Mintlify Callout iconType is presentation-only and is not persisted."
+    }
+  ]
+}

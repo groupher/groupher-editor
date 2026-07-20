@@ -9,11 +9,21 @@ export const RICH_EDITOR_ELEMENT_TYPES = [
   'h5',
   'h6',
   'blockquote',
+  'code_block',
+  'code_line',
   'hr',
   'a',
   'mention',
   'toggle',
+  'accordion_group',
+  'accordion',
+  'accordion_title',
+  'accordion_content',
   'callout',
+  'table',
+  'tr',
+  'td',
+  'th',
 ] as const;
 
 export const RICH_EDITOR_INLINE_ELEMENT_TYPES = ['a', 'mention'] as const;

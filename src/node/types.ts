@@ -38,3 +38,33 @@ export type TRichEditorJsonValue =
   | { [key: string]: TRichEditorJsonValue };
 
 export type TRichEditorCanonicalValue = TRichEditorJsonValue[];
+
+export type TRichEditorMarkdownSource =
+  | 'docusaurus'
+  | 'fumadocs'
+  | 'gitbook'
+  | 'github'
+  | 'groupher'
+  | 'mintlify'
+  | 'mkdocs-material'
+  | 'nextra'
+  | 'rspress'
+  | 'starlight'
+  | 'vitepress';
+
+export type TRichEditorMarkdownImportDiagnostic = {
+  code: 'unsupported_attribute';
+  message: string;
+  path: number[];
+  severity: 'warning';
+  attribute?: string;
+};
+
+export type TRichEditorMarkdownImportOptions = {
+  source?: TRichEditorMarkdownSource;
+};
+
+export type TRichEditorMarkdownImportResult = {
+  diagnostics: TRichEditorMarkdownImportDiagnostic[];
+  value: TRichEditorCanonicalValue;
+};

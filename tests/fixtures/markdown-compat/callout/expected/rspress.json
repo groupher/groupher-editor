@@ -1,0 +1,42 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "note",
+      "children": [{ "text": "This page is generated from source files." }]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "title": "Local shortcut",
+      "children": [
+        { "text": "Use the local preview while editing content." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "important",
+      "children": [
+        { "text": "Commit the lockfile with dependency changes." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "children": [{ "text": "The search index updates asynchronously." }]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "children": [
+        { "text": "The next build invalidates the current preview." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [{ "text": "Rotating the secret signs out all users." }]
+    }
+  ],
+  "diagnostics": []
+}

@@ -1,0 +1,34 @@
+{
+  "value": [
+    {
+      "type": "callout",
+      "variant": "note",
+      "children": [{ "text": "This behavior is enabled by default." }]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "children": [
+        { "text": "Use a scoped token for local development." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "important",
+      "children": [{ "text": "Save the recovery code before continuing." }]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "children": [
+        { "text": "The next step temporarily interrupts service." }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "danger",
+      "children": [{ "text": "Exposing this secret grants full access." }]
+    }
+  ],
+  "diagnostics": []
+}
