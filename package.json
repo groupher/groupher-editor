@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.21",
+  "version": "0.0.25",
   "main": "dist/rich-editor.js",
   "module": "dist/rich-editor.js",
   "types": "dist/index.d.ts",
