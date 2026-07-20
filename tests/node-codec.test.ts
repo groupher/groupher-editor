@@ -1,4 +1,4 @@
-import { serializeMd } from '@platejs/markdown';
+import { deserializeMd, serializeMd } from '@platejs/markdown';
 import { createSlateEditor } from 'platejs';
 import { describe, expect, it } from 'vitest';
 
@@ -65,6 +65,30 @@ describe('Node codec contract', () => {
 
     expect(serializeMd(browserEditor)).toBe(serializeMarkdown(FULL_VALUE));
     expect(serializeMarkdown(FULL_VALUE)).toBe(FULL_VALUE_MARKDOWN);
+  });
+
+  it('accepts Plate-native nested blocks produced by Markdown deserialization', () => {
+    const value = deserializeMd(
+      createNodeEditor(),
+      '> ## Documentation Index\n>\n> Fetch the complete documentation index.'
+    );
+
+    expect(value).toEqual([
+      {
+        children: [
+          {
+            children: [{ text: 'Documentation Index' }],
+            type: 'h2',
+          },
+          {
+            children: [{ text: 'Fetch the complete documentation index.' }],
+            type: 'p',
+          },
+        ],
+        type: 'blockquote',
+      },
+    ]);
+    expect(validateValue(value)).toEqual({ diagnostics: [], valid: true });
   });
 
   it('creates an isolated Node editor without mutating the input', () => {

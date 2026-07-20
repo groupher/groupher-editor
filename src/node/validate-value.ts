@@ -171,15 +171,6 @@ const validateNode = (
     });
   }
 
-  if (!isRoot && elementTypes.has(nodeType) && !inlineElementTypes.has(nodeType)) {
-    addDiagnostic(diagnostics, {
-      code: 'invalid_node_position',
-      message: `Block node cannot be nested inside another element: ${nodeType}.`,
-      nodeType,
-      path,
-    });
-  }
-
   if (!Array.isArray(node.children)) {
     addDiagnostic(diagnostics, {
       code: 'invalid_node',
@@ -190,6 +181,8 @@ const validateNode = (
     return;
   }
 
+  // Keep element nesting Plate-native. Plugins can produce nested blocks, such
+  // as Markdown blockquotes containing headings and paragraphs.
   node.children.forEach((child, index) =>
     validateNode(child, [...path, index], diagnostics, false)
   );
