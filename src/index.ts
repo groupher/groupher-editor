@@ -1,8 +1,22 @@
-import type { ComponentType, ReactNode } from "react";
+import type {
+	ForwardRefExoticComponent,
+	ReactNode,
+	RefAttributes,
+} from "react";
 import type { TElement } from "platejs";
 
+import type { TRichEditorHandle } from "./editor-api";
 import type { TRichEditorValue } from "./types";
 
+export type {
+	TBlockRef,
+	TRichEditorCaptureCursorOptions,
+	TRichEditorCommandResult,
+	TCursorRef,
+	TLocation,
+	TRichEditorHandle,
+	TRichEditorOutlineItem,
+} from "./editor-api";
 export type { TRichEditorValue } from "./types";
 export type TRichEditorLocale = "en" | "zh-CN";
 
@@ -70,7 +84,6 @@ export type TRichEditorQuickActionsConfig =
 	  };
 
 export type TRichEditorProps = {
-	value?: TRichEditorValue;
 	defaultValue?: TRichEditorValue;
 	onChange?: (value: TRichEditorValue) => void;
 	className?: string;
@@ -81,6 +94,8 @@ export type TRichEditorProps = {
 	quickActions?: TRichEditorQuickActionsConfig;
 };
 
-declare const RichEditor: ComponentType<TRichEditorProps>;
+declare const RichEditor: ForwardRefExoticComponent<
+	TRichEditorProps & RefAttributes<TRichEditorHandle>
+>;
 
 export default RichEditor;

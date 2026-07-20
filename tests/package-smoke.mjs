@@ -26,6 +26,10 @@ const indexDeclarationSource = await readFile(
   new URL('../dist/index.d.ts', import.meta.url),
   'utf8'
 );
+const editorApiDeclarationSource = await readFile(
+  new URL('../dist/editor-api.d.ts', import.meta.url),
+  'utf8'
+);
 const diffViewerDeclarationSource = await readFile(
   new URL('../dist/diff-viewer.d.ts', import.meta.url),
   'utf8'
@@ -73,6 +77,28 @@ declarationSources.forEach((source) => {
   assert.doesNotMatch(source, /from ['"]@\//);
 });
 assert.doesNotMatch(indexDeclarationSource, /RichEditorDiff/);
+assert.doesNotMatch(indexDeclarationSource, /\bvalue\?: TRichEditorValue/);
+assert.match(indexDeclarationSource, /TRichEditorHandle/);
+assert.match(editorApiDeclarationSource, /insertContent/);
+assert.match(editorApiDeclarationSource, /content: TRichEditorValue/);
+assert.doesNotMatch(editorApiDeclarationSource, /insertFragment/);
+assert.match(editorApiDeclarationSource, /type: "document"/);
+assert.match(editorApiDeclarationSource, /type: "selection"/);
+assert.match(editorApiDeclarationSource, /type: "cursor"/);
+assert.match(editorApiDeclarationSource, /type: "block"/);
+assert.match(editorApiDeclarationSource, /position: "start" \| "end"/);
+assert.match(editorApiDeclarationSource, /captureCursor/);
+assert.match(editorApiDeclarationSource, /getOutline/);
+assert.match(editorApiDeclarationSource, /TCursorRef/);
+assert.match(editorApiDeclarationSource, /TBlockRef/);
+assert.match(editorApiDeclarationSource, /TLocation/);
+assert.match(editorApiDeclarationSource, /location: TLocation/);
+assert.doesNotMatch(editorApiDeclarationSource, /TRichEditor(?:Cursor|Block)Ref/);
+assert.doesNotMatch(editorApiDeclarationSource, /TRichEditorLocation/);
+assert.doesNotMatch(editorApiDeclarationSource, /TRichEditorInsertFragmentOptions/);
+assert.doesNotMatch(editorApiDeclarationSource, /selectionBehavior/);
+assert.doesNotMatch(editorApiDeclarationSource, /document-edge/);
+assert.match(indexDeclarationSource, /ForwardRefExoticComponent/);
 assert.match(diffViewerDeclarationSource, /diffValue: TRichEditorDiffValue/);
 assert.doesNotMatch(
   diffViewerDeclarationSource,
@@ -80,7 +106,7 @@ assert.doesNotMatch(
 );
 
 const richEditor = await import('@groupher/rich-editor');
-assert.equal(typeof richEditor.default, 'function');
+assert.equal(typeof richEditor.default, 'object');
 assert.equal('RichEditorDiff' in richEditor, false);
 
 const diffViewer = await import('@groupher/rich-editor/diff-viewer');

@@ -6,6 +6,7 @@ import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
 import { Plate, usePlateEditor } from "platejs/react";
 
 import { EditorKit } from "@/components/editor/editor-kit";
+import { insertContent } from "@/commands/insert-content";
 import {
 	getQuickActionsInset,
 	getVisibleQuickActionItems,
@@ -20,6 +21,12 @@ import { LinkToolbarButton } from "@/components/ui/link-toolbar-button";
 import { MarkToolbarButton } from "@/components/ui/mark-toolbar-button";
 import { I18nProvider, type TLocale, useI18n } from "@/i18n";
 import { MentionProvider, type TMentionOption } from "@/mention-context";
+import type { TRichEditorHandle } from "@/editor-api";
+import {
+	captureCursor,
+	getOutline,
+	releaseEditorLocationRefs,
+} from "@/editor-location";
 import type { TRichEditorValue } from "@/types";
 
 const cloneValue = (value: TRichEditorValue): TRichEditorValue =>
@@ -76,7 +83,6 @@ const defaultValue: TRichEditorValue = [
 ];
 
 export type TRichEditorProps = {
-	value?: TRichEditorValue;
 	defaultValue?: TRichEditorValue;
 	onChange?: (value: TRichEditorValue) => void;
 	className?: string;
@@ -88,7 +94,6 @@ export type TRichEditorProps = {
 };
 
 type TRichEditorInnerProps = {
-	value?: TRichEditorValue;
 	defaultValue: TRichEditorValue;
 	onChange?: (value: TRichEditorValue) => void;
 	className?: string;
@@ -96,14 +101,13 @@ type TRichEditorInnerProps = {
 	quickActions?: TRichEditorQuickActionsConfig;
 };
 
-function RichEditorInner({
-	value: controlledValue,
-	defaultValue,
-	onChange,
-	className,
-	debugMode,
-	quickActions,
-}: TRichEditorInnerProps) {
+const RichEditorInner = React.forwardRef<
+	TRichEditorHandle,
+	TRichEditorInnerProps
+>(function RichEditorInner(
+	{ defaultValue, onChange, className, debugMode, quickActions },
+	ref,
+) {
 	const i18n = useI18n();
 	const visibleQuickActions = getVisibleQuickActionItems(quickActions);
 	const hasQuickActions = visibleQuickActions.length > 0;
@@ -112,39 +116,47 @@ function RichEditorInner({
 				"--rich-editor-quick-action-space": `${getQuickActionsInset(quickActions)}px`,
 			} as React.CSSProperties)
 		: undefined;
-	const isControlled = controlledValue !== undefined;
-	const [value, setValue] = React.useState<TRichEditorValue>(() => {
-		if (isControlled) return controlledValue;
-		return defaultValue;
-	});
-	const currentValue = isControlled ? controlledValue : value;
 	const [jsonInput, setJsonInput] = React.useState("");
 	const [jsonError, setJsonError] = React.useState("");
 	const [readOnlyValue, setReadOnlyValue] = React.useState<TRichEditorValue>(() =>
-		cloneValue(currentValue),
+		cloneValue(defaultValue),
 	);
 
 	const editor = usePlateEditor({
 		plugins: EditorKit,
-		value: currentValue,
+		value: () => cloneValue(defaultValue),
 	});
 	const readOnlyEditor = usePlateEditor({
 		plugins: EditorKit,
 		value: readOnlyValue,
 	});
 
-	React.useEffect(() => {
-		if (!isControlled) return;
+	React.useImperativeHandle(
+		ref,
+		() => ({
+			insertContent: (content, location) =>
+				insertContent(editor, content, location),
+			captureCursor: (options) => captureCursor(editor, options),
+			getOutline: () => getOutline(editor),
+			focus: () => editor.tf.focus(),
+		}),
+		[editor],
+	);
 
-		editor.tf.setValue(controlledValue);
-	}, [controlledValue, editor, isControlled]);
+	React.useEffect(
+		() => () => {
+			releaseEditorLocationRefs(editor);
+		},
+		[editor],
+	);
 
 	const handleExport = React.useCallback(() => {
+		const currentValue = editor.children as TRichEditorValue;
 		const nextJson = JSON.stringify(currentValue, null, 2);
 		setJsonInput(nextJson);
 		setReadOnlyValue(cloneValue(currentValue));
 		setJsonError("");
-	}, [currentValue]);
+	}, [editor]);
 
 	const handleRenderReadonly = React.useCallback(() => {
 		try {
@@ -165,10 +177,6 @@ function RichEditorInner({
 			<Plate
 				editor={editor}
 				onChange={({ value }) => {
-					if (!isControlled) {
-						setValue(value);
-					}
-
 					onChange?.(value);
 				}}
 			>
@@ -249,35 +257,50 @@ function RichEditorInner({
 			) : null}
 		</div>
 	);
-}
+});
 
-export default function RichEditor({
-	value,
-	defaultValue: defaultValueProp = defaultValue,
-	onChange,
-	className,
-	debugMode = false,
-	locale,
-	mentionOptions,
-	onMentionSearch,
-	quickActions,
-}: TRichEditorProps) {
-	return (
-		<I18nProvider locale={locale}>
-			<MentionProvider
-				mentionOptions={mentionOptions}
-				onMentionSearch={onMentionSearch}
-			>
-				<RichEditorInner
-					value={value}
-					defaultValue={defaultValueProp}
-					onChange={onChange}
-					className={className}
-					debugMode={debugMode}
-					quickActions={quickActions}
-				/>
-			</MentionProvider>
-		</I18nProvider>
-	);
-}
+const RichEditor = React.forwardRef<TRichEditorHandle, TRichEditorProps>(
+	function RichEditor(
+		{
+			defaultValue: defaultValueProp = defaultValue,
+			onChange,
+			className,
+			debugMode = false,
+			locale,
+			mentionOptions,
+			onMentionSearch,
+			quickActions,
+		},
+		ref,
+	) {
+		return (
+			<I18nProvider locale={locale}>
+				<MentionProvider
+					mentionOptions={mentionOptions}
+					onMentionSearch={onMentionSearch}
+				>
+					<RichEditorInner
+						ref={ref}
+						defaultValue={defaultValueProp}
+						onChange={onChange}
+						className={className}
+						debugMode={debugMode}
+						quickActions={quickActions}
+					/>
+				</MentionProvider>
+			</I18nProvider>
+		);
+	},
+);
+
+export default RichEditor;
+export type {
+	TBlockRef,
+	TRichEditorCaptureCursorOptions,
+	TRichEditorCommandResult,
+	TCursorRef,
+	TLocation,
+	TRichEditorHandle,
+	TRichEditorOutlineItem,
+} from "@/editor-api";
 export type { TRichEditorValue } from "@/types";
