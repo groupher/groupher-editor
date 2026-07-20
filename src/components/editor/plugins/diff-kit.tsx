@@ -1,6 +1,7 @@
 'use client';
 
 import type { Descendant } from 'platejs';
+import type { CSSProperties } from 'react';
 
 import {
   type DiffOperation,
@@ -10,17 +11,21 @@ import { createPlatePlugin } from 'platejs/react';
 
 import { cn } from '@/lib/utils';
 
+import { RICH_EDITOR_INDENT_OFFSET } from './indent-kit';
 import { PersistedEditorKit } from '../persisted-editor-kit';
 
 type TDiffNode = Descendant & {
   children?: TDiffNode[];
   diff?: true;
   diffOperation?: DiffOperation;
+  indent?: number;
+  listStyleType?: string;
   text?: string;
   type?: string;
 };
 
 const INVISIBLE_TEXT_PATTERN = /[\u200B-\u200D\u2060\uFEFF]/g;
+const DIFF_LIST_MARKER_GUTTER = '1.5rem';
 
 const isVisuallyEmptyTextNode = (node: TDiffNode): boolean =>
   typeof node.text === 'string' &&
@@ -41,6 +46,34 @@ export const shouldStyleDiffOperation = (
     diffNode.type === 'p' &&
     diffNode.children?.every(isVisuallyEmptyTextNode)
   );
+};
+
+export const getDiffListStyle = (
+  node: Descendant | undefined
+): CSSProperties | undefined => {
+  const diffNode = node as TDiffNode | undefined;
+
+  if (!diffNode?.listStyleType) return;
+
+  const indent =
+    typeof diffNode.indent === 'number' && Number.isFinite(diffNode.indent)
+      ? Math.max(1, diffNode.indent)
+      : 1;
+  const visualIndent = indent - 1;
+  const nestedOffset = visualIndent * RICH_EDITOR_INDENT_OFFSET;
+
+  return {
+    // A first-level list is the diff-view baseline. Keep only relative nesting
+    // inside the row so every diff marker stays aligned with other blocks.
+    marginLeft: undefined,
+    // List markers render outside the li content box, so reserve their space
+    // inside the full-width diff row instead of using an outer margin. Nested
+    // levels still retain the editor's relative indentation.
+    paddingLeft:
+      nestedOffset > 0
+        ? `calc(${DIFF_LIST_MARKER_GUTTER} + ${nestedOffset}px)`
+        : DIFF_LIST_MARKER_GUTTER,
+  };
 };
 
 const diffClassMap: Record<DiffOperation['type'], string> = {
@@ -68,19 +101,21 @@ const DiffStylePlugin = createPlatePlugin({
       transformProps: ({ element, props, text }) => {
         const node = (element ?? text) as TDiffNode | undefined;
         const operation = node?.diffOperation;
+        const listStyle = text === undefined ? getDiffListStyle(node) : undefined;
+        const layoutProps = listStyle ? { ...props, style: listStyle } : props;
 
-        if (!operation) return props;
+        if (!operation) return layoutProps;
 
         const isTextNode = text !== undefined;
-        if (!shouldStyleDiffOperation(node, isTextNode)) return props;
+        if (!shouldStyleDiffOperation(node, isTextNode)) return layoutProps;
 
         const operationClass = isTextNode
           ? diffClassMap[operation.type]
           : diffElementClassMap[operation.type];
 
         return {
-          ...props,
-          className: cn(props.className, operationClass),
+          ...layoutProps,
+          className: cn(layoutProps.className, operationClass),
           'data-rich-editor-diff': operation.type,
         };
       },

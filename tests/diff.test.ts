@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { PersistedEditorKit } from '../src/components/editor/persisted-editor-kit';
 import {
   DiffEditorKit,
+  getDiffListStyle,
   shouldStyleDiffOperation,
 } from '../src/components/editor/plugins/diff-kit';
 import {
@@ -178,6 +179,29 @@ describe('Rich editor Diff', () => {
 });
 
 describe('Diff inline schema contract', () => {
+  it('uses the first list level as the diff-view baseline', () => {
+    expect(
+      getDiffListStyle(
+        paragraph('top-level', { indent: 1, listStyleType: 'disc' })
+      )
+    ).toEqual({
+      marginLeft: undefined,
+      paddingLeft: '1.5rem',
+    });
+    expect(
+      getDiffListStyle(
+        paragraph('nested', { indent: 2, listStyleType: 'decimal' })
+      )
+    ).toEqual({
+      marginLeft: undefined,
+      paddingLeft: 'calc(1.5rem + 40px)',
+    });
+  });
+
+  it('leaves non-list block indentation to the persisted editor kit', () => {
+    expect(getDiffListStyle(paragraph('indented', { indent: 1 }))).toBeUndefined();
+  });
+
   it('does not style visually empty paragraph updates', () => {
     const updateOperation = {
       diff: true as const,
