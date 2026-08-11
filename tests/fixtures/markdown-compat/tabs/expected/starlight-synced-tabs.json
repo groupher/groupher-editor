@@ -1,0 +1,40 @@
+{
+  "diagnostics": [],
+  "value": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [{ "text": "npm install" }],
+              "type": "p"
+            }
+          ],
+          "icon": {
+            "library": "starlight",
+            "name": "seti:npm",
+            "type": "vendor"
+          },
+          "label": "npm",
+          "type": "tab",
+          "value": "npm"
+        },
+        {
+          "children": [
+            {
+              "children": [{ "text": "pnpm install" }],
+              "type": "p"
+            }
+          ],
+          "label": "pnpm",
+          "type": "tab",
+          "value": "pnpm"
+        }
+      ],
+      "defaultValue": "npm",
+      "persist": "local",
+      "syncTabKey": "package-manager",
+      "type": "tabs"
+    }
+  ]
+}

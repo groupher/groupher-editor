@@ -1,0 +1,46 @@
+{
+  "diagnostics": [],
+  "value": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [{ "text": "const value = 1" }],
+              "type": "p"
+            }
+          ],
+          "icon": {
+            "library": "mintlify",
+            "name": "js",
+            "type": "vendor"
+          },
+          "label": "JavaScript",
+          "type": "tab",
+          "value": "javascript"
+        },
+        {
+          "children": [
+            {
+              "children": [{ "text": "value = 1" }],
+              "type": "p"
+            }
+          ],
+          "icon": {
+            "library": "fontawesome",
+            "name": "python",
+            "type": "vendor",
+            "variant": "brands"
+          },
+          "label": "Python",
+          "type": "tab",
+          "value": "python"
+        }
+      ],
+      "defaultValue": "python",
+      "persist": "local",
+      "syncTabKey": "mintlify:tabs",
+      "type": "tabs"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-export const RICH_EDITOR_SCHEMA_VERSION = 2 as const;
+export const RICH_EDITOR_SCHEMA_VERSION = 3 as const;
 
 export const RICH_EDITOR_ELEMENT_TYPES = [
   'p',
@@ -11,6 +11,10 @@ export const RICH_EDITOR_ELEMENT_TYPES = [
   'blockquote',
   'code_block',
   'code_line',
+  'code_group',
+  'code_group_item',
+  'tabs',
+  'tab',
   'hr',
   'a',
   'mention',

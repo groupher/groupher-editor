@@ -12,6 +12,7 @@ import {
   LightbulbIcon,
   ListIcon,
   ListOrdered,
+  PanelsTopLeftIcon,
   PilcrowIcon,
   Quote,
   Square,
@@ -21,6 +22,7 @@ import { PlateElement } from 'platejs/react';
 
 import { applyBlockActionValue } from '@/components/editor/block-actions';
 import { useI18n } from '@/i18n';
+import { createTabsElement, TABS_KEYS } from '@/tabs';
 
 import {
   InlineCombobox,
@@ -44,6 +46,26 @@ export function SlashInputElement(
 ) {
   const { editor, element } = props;
   const i18n = useI18n();
+  const applySlashAction = (value: string) => {
+    if (value !== TABS_KEYS.group) {
+      applyBlockActionValue(editor, value);
+      return;
+    }
+
+    const inputPath = editor.api.findPath(element);
+    const blockEntry =
+      (inputPath ? editor.api.block({ at: inputPath }) : undefined) ??
+      editor.api.block();
+    if (!blockEntry) return;
+
+    const [, blockPath] = blockEntry;
+    editor.tf.withoutNormalizing(() => {
+      editor.tf.removeNodes({ at: blockPath });
+      editor.tf.insertNodes(createTabsElement(), { at: blockPath });
+    });
+    editor.tf.select(editor.api.start([...blockPath, 0, 0]));
+    editor.tf.focus();
+  };
 
   const groups = React.useMemo(
     () =>
@@ -93,6 +115,12 @@ export function SlashInputElement(
               label: i18n.slash.items.blockquote,
               value: KEYS.blockquote,
             },
+            {
+              icon: <PanelsTopLeftIcon />,
+              keywords: ['tabs', 'tab', 'sdk', 'language'],
+              label: i18n.slash.items.tabs,
+              value: TABS_KEYS.group,
+            },
           ],
         },
         {
@@ -138,7 +166,7 @@ export function SlashInputElement(
                 <InlineComboboxItem
                   key={value}
                   value={value}
-                  onClick={() => applyBlockActionValue(editor, value)}
+                  onClick={() => applySlashAction(value)}
                   label={label}
                   group={group}
                   keywords={keywords}

@@ -1,9 +1,14 @@
 import { deserializeMd } from '@platejs/markdown';
+import { remarkMdx, remarkMention } from '@platejs/markdown';
+import remarkGfm from 'remark-gfm';
 
 import { canonicalizeValue } from '@/node/canonicalize-value';
 import { createNodeEditor } from '@/node/create-node-editor';
 import { normalizeAccordionMarkdown } from '@/node/markdown-import/normalize-accordion-markdown';
 import { normalizeCalloutMarkdown } from '@/node/markdown-import/normalize-callout-markdown';
+import { normalizeCodeGroupMarkdown } from '@/node/markdown-import/normalize-code-group-markdown';
+import { protectFencedCode } from '@/node/markdown-import/protect-fenced-code';
+import { createRemarkTabsPlugin } from '@/node/markdown-import/remark-tabs-compat';
 import type {
   TRichEditorMarkdownImportDiagnostic,
   TRichEditorMarkdownImportOptions,
@@ -117,14 +122,33 @@ export const deserializeMarkdown = (
   markdown: string,
   options: TRichEditorMarkdownImportOptions = {}
 ): TRichEditorMarkdownImportResult => {
+  const source = options.source ?? 'groupher';
+  const withCodeGroups = normalizeCodeGroupMarkdown(markdown, source);
+  const protectedMarkdown = protectFencedCode(withCodeGroups);
   const normalized = normalizeCalloutMarkdown(
-    markdown,
-    options.source ?? 'groupher'
+    protectedMarkdown.markdown,
+    source
   );
+  const portableMarkdown = normalizeAccordionMarkdown(
+    normalized.markdown,
+    source
+  );
+  const tabDiagnostics: TRichEditorMarkdownImportDiagnostic[] = [];
   const value = structuredClone(
     deserializeMd(
       createNodeEditor(),
-      normalizeAccordionMarkdown(normalized.markdown)
+      protectedMarkdown.restore(portableMarkdown),
+      {
+        remarkPlugins: [
+          remarkGfm,
+          remarkMdx,
+          createRemarkTabsPlugin({
+            diagnostics: tabDiagnostics,
+            source,
+          }),
+          remarkMention,
+        ],
+      }
     )
   ) as TMutableNode[];
   const calloutPaths = new Map<string, number[]>();
@@ -133,11 +157,13 @@ export const deserializeMarkdown = (
   normalizeImportedCallouts(value, calloutPaths);
   normalizeImportedAccordions(value);
 
-  const diagnostics: TRichEditorMarkdownImportDiagnostic[] =
-    normalized.diagnostics.map(({ calloutId, ...diagnostic }) => ({
+  const diagnostics: TRichEditorMarkdownImportDiagnostic[] = [
+    ...normalized.diagnostics.map(({ calloutId, ...diagnostic }) => ({
       ...diagnostic,
       path: calloutPaths.get(calloutId) ?? [],
-    }));
+    })),
+    ...tabDiagnostics,
+  ];
 
   return {
     diagnostics,

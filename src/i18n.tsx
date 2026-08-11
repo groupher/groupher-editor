@@ -29,11 +29,24 @@ type TI18nStrings = {
       toggle: string;
       callout: string;
       blockquote: string;
+      tabs: string;
     };
   };
   mention: {
     empty: string;
     label: string;
+  };
+  tabs: {
+    add: string;
+    delete: string;
+    edit: string;
+    icon: string;
+    iconPlaceholder: string;
+    label: string;
+    listLabel: string;
+    moveLeft: string;
+    moveRight: string;
+    save: string;
   };
   export: {
     title: string;
@@ -73,11 +86,24 @@ const translations: Record<TLocale, TI18nStrings> = {
         toggle: 'Toggle',
         callout: 'Callout',
         blockquote: 'Blockquote',
+        tabs: 'Tabs',
       },
     },
     mention: {
       empty: 'No matches',
       label: 'Mention',
+    },
+    tabs: {
+      add: 'Add',
+      delete: 'Delete',
+      edit: 'Edit tabs',
+      icon: 'Icon',
+      iconPlaceholder: 'terminal or /icons/python.svg',
+      label: 'Label',
+      listLabel: 'Tabs',
+      moveLeft: 'Left',
+      moveRight: 'Right',
+      save: 'Save',
     },
     export: {
       title: 'Export JSON',
@@ -115,11 +141,24 @@ const translations: Record<TLocale, TI18nStrings> = {
         toggle: '折叠',
         callout: '提示块',
         blockquote: '引用',
+        tabs: '标签页',
       },
     },
     mention: {
       empty: '没有匹配用户',
       label: '提及',
+    },
+    tabs: {
+      add: '新增',
+      delete: '删除',
+      edit: '编辑标签页',
+      icon: '图标',
+      iconPlaceholder: 'terminal 或 /icons/python.svg',
+      label: '标题',
+      listLabel: '标签页',
+      moveLeft: '左移',
+      moveRight: '右移',
+      save: '保存',
     },
     export: {
       title: '导出 JSON',

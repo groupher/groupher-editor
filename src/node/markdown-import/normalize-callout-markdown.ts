@@ -8,7 +8,7 @@ type TCalloutAttributes = Record<string, string>;
 type TMdxCalloutSource = 'fumadocs' | 'mintlify' | 'nextra';
 
 type TMintlifyTitledContainer = {
-  component: 'Card' | 'Tab';
+  component: 'Card';
   headingLevel: 4;
 };
 
@@ -70,11 +70,10 @@ const LUCIDE_ICON_ALIASES: Partial<
 };
 
 const MINTLIFY_TITLED_CONTAINERS: TMintlifyTitledContainer[] = [
-  { component: 'Tab', headingLevel: 4 },
   { component: 'Card', headingLevel: 4 },
 ];
 
-const MINTLIFY_GROUP_CONTAINERS = ['Tabs', 'CardGroup'] as const;
+const MINTLIFY_GROUP_CONTAINERS = ['CardGroup'] as const;
 
 const escapeAttribute = (value: string): string =>
   value.replaceAll('&', '&amp;').replaceAll('"', '&quot;');

@@ -97,8 +97,12 @@ declarationSources.forEach((source) => {
 assert.doesNotMatch(indexDeclarationSource, /RichEditorDiff/);
 assert.match(nodeDeclarationSource, /deserializeMarkdown/);
 assert.match(nodeDeclarationSource, /TRichEditorMarkdownImportResult/);
+assert.match(nodeDeclarationSource, /TTabIcon/);
+assert.match(nodeDeclarationSource, /TTabsElement/);
 assert.doesNotMatch(indexDeclarationSource, /\bvalue\?: TRichEditorValue/);
 assert.match(indexDeclarationSource, /TRichEditorHandle/);
+assert.match(indexDeclarationSource, /TTabIcon/);
+assert.match(indexDeclarationSource, /TTabsElement/);
 assert.match(editorApiDeclarationSource, /insertContent/);
 assert.match(editorApiDeclarationSource, /content: TRichEditorValue/);
 assert.doesNotMatch(editorApiDeclarationSource, /insertFragment/);
@@ -128,6 +132,7 @@ assert.doesNotMatch(
 
 const richEditor = await import('@groupher/rich-editor');
 assert.equal(typeof richEditor.default, 'object');
+assert.equal(typeof richEditor.TabsSyncProvider, 'function');
 assert.equal('RichEditorDiff' in richEditor, false);
 
 const diffViewer = await import('@groupher/rich-editor/diff-viewer');
@@ -175,8 +180,36 @@ assert.match(renderedStatic, /<details[^>]*rich-editor-step-details[^>]*open/);
 assert.match(renderedStatic, /<summary[^>]*rich-editor-step-heading/);
 assert.match(renderedStatic, /rich-editor-step-collapse-pill/);
 
+const renderedStaticTabs = renderToString(
+  createElement(staticViewer.RichEditorStatic, {
+    value: [
+      {
+        type: 'tabs',
+        defaultValue: 'javascript',
+        children: [
+          {
+            type: 'tab',
+            label: 'JavaScript',
+            value: 'javascript',
+            children: [{ type: 'p', children: [{ text: 'JS SDK' }] }],
+          },
+          {
+            type: 'tab',
+            label: 'Python',
+            value: 'python',
+            children: [{ type: 'p', children: [{ text: 'Python SDK' }] }],
+          },
+        ],
+      },
+    ],
+  })
+);
+assert.match(renderedStaticTabs, /role="tablist"/);
+assert.match(renderedStaticTabs, /JS SDK/);
+assert.match(renderedStaticTabs, /Python SDK/);
+
 const codec = await import('@groupher/rich-editor/node');
-assert.equal(codec.RICH_EDITOR_SCHEMA_VERSION, 2);
+assert.equal(codec.RICH_EDITOR_SCHEMA_VERSION, 3);
 assert.equal(typeof codec.createNodeEditor, 'function');
 assert.equal(typeof codec.deserializeMarkdown, 'function');
 assert.equal(typeof codec.validateValue, 'function');
@@ -185,6 +218,16 @@ assert.equal(typeof codec.serializeMarkdown, 'function');
 assert.equal(typeof codec.serializeHtmlUnsafe, 'function');
 assert.equal(typeof codec.extractToc, 'function');
 assert.equal(typeof codec.extractPlainText, 'function');
+const importedTabs = codec.deserializeMarkdown(
+  '<Tabs><Tab title="JavaScript">JS SDK</Tab><Tab title="Python">Python SDK</Tab></Tabs>',
+  { source: 'mintlify' }
+);
+assert.equal(importedTabs.value[0].type, 'tabs');
+assert.equal(importedTabs.value[0].children[1].label, 'Python');
+const renderedNodeTabs = await codec.serializeHtmlUnsafe(importedTabs.value);
+assert.match(renderedNodeTabs, /rich-editor-tabs-fallback/);
+assert.match(renderedNodeTabs, /JS SDK/);
+assert.match(renderedNodeTabs, /Python SDK/);
 
 const diff = await import('@groupher/rich-editor/diff');
 assert.equal(typeof diff.computeRichEditorDiff, 'function');

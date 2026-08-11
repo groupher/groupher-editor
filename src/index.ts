@@ -1,4 +1,5 @@
 import type {
+	ComponentType,
 	ForwardRefExoticComponent,
 	ReactNode,
 	RefAttributes,
@@ -18,6 +19,13 @@ export type {
 	TRichEditorOutlineItem,
 } from "./editor-api";
 export type { TRichEditorValue } from "./types";
+export type {
+	TTabElement,
+	TTabIcon,
+	TTabsElement,
+	TTabsOrientation,
+	TTabsPersist,
+} from "./tabs";
 export type TRichEditorLocale = "en" | "zh-CN";
 
 export type TRichEditorMentionOption = {
@@ -97,5 +105,9 @@ export type TRichEditorProps = {
 declare const RichEditor: ForwardRefExoticComponent<
 	TRichEditorProps & RefAttributes<TRichEditorHandle>
 >;
+
+export declare const TabsSyncProvider: ComponentType<{
+	children?: ReactNode;
+}>;
 
 export default RichEditor;

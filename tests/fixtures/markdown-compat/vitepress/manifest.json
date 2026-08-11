@@ -1,0 +1,14 @@
+{
+  "component": "vitepress",
+  "contractVersion": 1,
+  "cases": [
+    {
+      "id": "vitepress-markdown-examples",
+      "platform": "vitepress",
+      "input": "inputs/markdown-examples.md",
+      "expected": "expected/markdown-examples.json",
+      "sourceUrl": "https://github.com/aklinker1/vitepress-knowledge/blob/main/docs/markdown-examples.md",
+      "verifiedAt": "2026-07-22"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 # Markdown Import
 
 本文档说明如何通过 `@groupher/rich-editor/node` 把 Markdown 或文档平台的
-Callout、Accordion、Steps 和结构化 Markdown 转换为 Groupher 使用的 canonical
-Plate JSON。
+Callout、Accordion、Code Group、Tabs、Steps 和结构化 Markdown 转换为 Groupher 使用的
+canonical Plate JSON。
 
 ## 基本流程
 
@@ -19,12 +19,15 @@ canonical Plate JSON + diagnostics
 ```
 
 兼容层负责把平台专属容器转换为 Plate 可以稳定解析的 Markdown/MDX。普通
-Markdown 仍由 Plate 解析；Mintlify 的 Tab、Card、Tooltip 和 metadata head 会在
-反序列化前展开或移除，避免容器缩进被误判成代码块。Accordion 和 Steps 不再
-降级为普通标题，而是分别进入通用的 `accordion_group` 和 `steps` 节点结构。
+Markdown 仍由 Plate 解析；Mintlify 的 Card、Tooltip 和 metadata head 会在
+反序列化前展开或移除，避免容器缩进被误判成代码块。Accordion、Tabs 和 Steps
+不会降级为普通标题，而是分别进入通用的 `accordion_group`、`tabs` 和 `steps`
+节点结构。
 
 Plate 原生的 fenced code block 和 GFM table 会保留为 `code_block` / `code_line`
 以及 `table` / `tr` / `td` / `th`，进入与浏览器编辑器一致的持久化 schema。
+兼容层会先保护 fenced code block，因此代码示例中的厂商语法只作为代码保存，
+不会被误转换成真实组件。
 
 ## 是否需要传 `source`
 
@@ -56,8 +59,9 @@ const result = deserializeMarkdown(groupherMarkdown, {
 ```
 
 默认模式只承诺解析 Groupher portable Markdown，例如小写的
-`<callout variant="info">...</callout>`、`<accordion_group>...</accordion_group>`
-和 `<steps><step title="...">...</step></steps>`。PascalCase 的
+`<callout variant="info">...</callout>`、`<accordion_group>...</accordion_group>`、
+`<tabs><tab label="..." value="...">...</tab></tabs>` 和
+`<steps><step title="...">...</step></steps>`。PascalCase 的
 `<AccordionGroup>/<Accordion>`、`<Steps>/<Step>` 以及 HTML
 `<details>/<summary>` 属于跨平台、低歧义结构，因此不依赖具体 `source` 也会被
 识别；其他厂商语法不会自动猜测。
@@ -86,7 +90,7 @@ type TRichEditorMarkdownSource =
 | `nextra` | `<Callout type="...">` 和 GitHub Alert |
 | `fumadocs` | `<Callout type="...">` |
 | `docusaurus` | `:::note` 等 admonition container |
-| `vitepress` | `::: info` 等 custom container |
+| `vitepress` | `::: info` 等 custom container、`::: details`、`:::code-group` |
 | `rspress` | `:::note` 等 container 和 GitHub Alert |
 | `starlight` | `:::note`、`:::tip`、`:::caution`、`:::danger` |
 | `github` | `> [!NOTE]` 等 GitHub Alert |
@@ -199,6 +203,62 @@ accordion_group
 
 Portable Markdown 使用小写节点名保存完整层级，浏览器和 Node/static 插件共用
 同一套 schema。静态 HTML 使用原生 `<details>/<summary>` 输出。
+
+VitePress 的 `::: details TITLE` 复用同一套 Accordion AST；缺省标题为
+`Details`。
+
+## Code Group AST
+
+VitePress 的 `:::code-group` 会保留代码块标签和语言信息：
+
+```text
+code_group
+└── code_group_item (label: "JS")
+    └── code_block (lang: "js")
+        └── code_line
+```
+
+`[JS]`、`[TS]` 等 fence 标签进入 `code_group_item.label`。浏览器和静态渲染器
+使用原生 radio control 呈现可键盘切换的标签页；portable Markdown 使用小写
+`<code_group>/<code_group_item>` 保持往返一致。
+
+VitePress 的 `js{4}`、`ts{2-4}` 等行高亮 metadata 会拆分为正确的 `lang` 和
+`highlightLines`，对应 `code_line` 同时带有 `highlighted: true`，不会再把
+`js{4}` 当作语言名。
+
+## Tabs AST
+
+Fumadocs、Docusaurus、Nextra、Mintlify 和 Starlight 的 MDX Tabs 会收敛为同一
+结构：
+
+```text
+tabs (defaultValue / orientation / syncTabKey / persist)
+└── tab (label / value / icon / anchorId)
+    └── paragraph / list / callout / code_block / table / ...
+```
+
+`tab.value` 是稳定身份；显示顺序直接由 `tabs.children` 的顺序决定，不额外持久化
+`index`。编辑器中的拖拽和左右移动会重排 children，重命名不会改变 value。
+
+`syncTabKey` 是可选的同步分组。只有 key 相同的 Tabs 才会广播和响应 active
+value；没有 key 的 Tabs 保持本地状态。接收到当前组不存在的 value 时，该组维持
+原选择。`persist` 支持 `none`、`session` 和 `local`，使用持久化时必须同时提供
+`syncTabKey`。
+
+兼容字段会按来源映射：
+
+| `source` | 识别的 Tabs 结构 | 同步字段 |
+| --- | --- | --- |
+| `fumadocs` | `<Tabs items={...}>` / `<Tab>` | `groupId` |
+| `docusaurus` | `<Tabs>` / `<TabItem>` | `groupId` |
+| `nextra` | `<Tabs>` / `<Tabs.Tab>` | `storageKey` |
+| `mintlify` | `<Tabs>` / `<Tab title="...">` | `sync` |
+| `starlight` | `<Tabs>` / `<TabItem label="...">` | `syncKey` |
+
+仅静态字符串、数字、数组和普通对象表达式会被读取；函数调用、变量引用等动态
+表达式不会执行，并会产生 warning diagnostic。portable Markdown 统一输出小写
+`<tabs>/<tab>`。React 静态渲染保留可切换的 ARIA Tabs；纯 Node HTML 会展开全部
+panel，保证无 JavaScript 时仍可读取所有内容。
 
 ## Steps AST
 

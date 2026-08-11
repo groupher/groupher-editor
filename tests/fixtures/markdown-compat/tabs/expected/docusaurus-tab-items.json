@@ -1,0 +1,35 @@
+{
+  "diagnostics": [],
+  "value": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [{ "text": "iOS" }],
+              "type": "p"
+            }
+          ],
+          "label": "Apple",
+          "type": "tab",
+          "value": "apple"
+        },
+        {
+          "children": [
+            {
+              "children": [{ "text": "Android" }],
+              "type": "p"
+            }
+          ],
+          "label": "Android",
+          "type": "tab",
+          "value": "android"
+        }
+      ],
+      "defaultValue": "android",
+      "persist": "local",
+      "syncTabKey": "mobile-os",
+      "type": "tabs"
+    }
+  ]
+}

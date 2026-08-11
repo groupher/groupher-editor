@@ -1,0 +1,47 @@
+{
+  "component": "tabs",
+  "contractVersion": 1,
+  "nodeTypes": ["tabs", "tab"],
+  "cases": [
+    {
+      "id": "fumadocs-items",
+      "platform": "fumadocs",
+      "input": "input/fumadocs-items.mdx",
+      "expected": "expected/fumadocs-items.json",
+      "sourceUrl": "https://www.fumadocs.dev/docs/ui/components/tabs",
+      "verifiedAt": "2026-07-23"
+    },
+    {
+      "id": "docusaurus-tab-items",
+      "platform": "docusaurus",
+      "input": "input/docusaurus-tab-items.mdx",
+      "expected": "expected/docusaurus-tab-items.json",
+      "sourceUrl": "https://docusaurus.io/docs/markdown-features/tabs",
+      "verifiedAt": "2026-07-23"
+    },
+    {
+      "id": "nextra-member-tabs",
+      "platform": "nextra",
+      "input": "input/nextra-member-tabs.mdx",
+      "expected": "expected/nextra-member-tabs.json",
+      "sourceUrl": "https://nextra.site/docs/built-ins/tabs",
+      "verifiedAt": "2026-07-23"
+    },
+    {
+      "id": "mintlify-titled-tabs",
+      "platform": "mintlify",
+      "input": "input/mintlify-titled-tabs.mdx",
+      "expected": "expected/mintlify-titled-tabs.json",
+      "sourceUrl": "https://www.mintlify.com/docs/components/tabs",
+      "verifiedAt": "2026-07-23"
+    },
+    {
+      "id": "starlight-synced-tabs",
+      "platform": "starlight",
+      "input": "input/starlight-synced-tabs.mdx",
+      "expected": "expected/starlight-synced-tabs.json",
+      "sourceUrl": "https://starlight.astro.build/components/tabs/",
+      "verifiedAt": "2026-07-23"
+    }
+  ]
+}

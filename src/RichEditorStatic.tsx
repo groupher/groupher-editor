@@ -2,8 +2,13 @@ import './global.css';
 
 import { createStaticEditor, PlateStatic } from 'platejs/static';
 
-import { BaseEditorKit } from '@/node/base-editor-kit';
+import { StaticCodeBlockKit } from '@/components/editor/plugins/code-block-static-kit';
+import { StaticTabsKit } from '@/components/editor/plugins/tabs-static-kit';
+import { TabsSyncProvider } from '@/components/ui/tabs-sync-provider';
+import { createBaseEditorKit } from '@/node/base-editor-kit';
 import type { TRichEditorValue } from '@/types';
+
+const StaticEditorKit = createBaseEditorKit(StaticCodeBlockKit, StaticTabsKit);
 
 export type TRichEditorStaticProps = {
   className?: string;
@@ -15,9 +20,13 @@ export function RichEditorStatic({
   value,
 }: TRichEditorStaticProps) {
   const editor = createStaticEditor({
-    plugins: BaseEditorKit,
+    plugins: StaticEditorKit,
     value,
   });
 
-  return <PlateStatic editor={editor} value={value} className={className} />;
+  return (
+    <TabsSyncProvider>
+      <PlateStatic editor={editor} value={value} className={className} />
+    </TabsSyncProvider>
+  );
 }

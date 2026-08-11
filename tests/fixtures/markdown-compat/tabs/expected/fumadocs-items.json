@@ -1,0 +1,35 @@
+{
+  "diagnostics": [],
+  "value": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [{ "text": "pnpm install" }],
+              "type": "p"
+            }
+          ],
+          "label": "pnpm",
+          "type": "tab",
+          "value": "pnpm"
+        },
+        {
+          "children": [
+            {
+              "children": [{ "text": "npm install" }],
+              "type": "p"
+            }
+          ],
+          "label": "npm",
+          "type": "tab",
+          "value": "npm"
+        }
+      ],
+      "defaultValue": "npm",
+      "persist": "local",
+      "syncTabKey": "package-manager",
+      "type": "tabs"
+    }
+  ]
+}

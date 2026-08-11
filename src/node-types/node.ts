@@ -1,4 +1,4 @@
-import type { SlateEditor, Value } from 'platejs';
+import type { SlateEditor, TElement, Value } from 'platejs';
 
 export type TRichEditorValidationCode =
   | 'invalid_node'
@@ -35,6 +35,38 @@ export type TRichEditorJsonValue =
 
 export type TRichEditorCanonicalValue = TRichEditorJsonValue[];
 
+export type TTabsOrientation = 'horizontal' | 'vertical';
+export type TTabsPersist = 'local' | 'none' | 'session';
+export type TTabIcon =
+  | {
+      name: string;
+      type: 'lucide';
+    }
+  | {
+      src: string;
+      type: 'image';
+    }
+  | {
+      library: 'fontawesome' | 'mintlify' | 'starlight';
+      name: string;
+      type: 'vendor';
+      variant?: string;
+    };
+export type TTabElement = TElement & {
+  children: TElement[];
+  label: string;
+  value: string;
+  anchorId?: string;
+  icon?: TTabIcon;
+};
+export type TTabsElement = TElement & {
+  children: TTabElement[];
+  defaultValue?: string;
+  orientation?: TTabsOrientation;
+  persist?: TTabsPersist;
+  syncTabKey?: string;
+};
+
 export type TRichEditorMarkdownSource =
   | 'docusaurus'
   | 'fumadocs'
@@ -65,7 +97,7 @@ export type TRichEditorMarkdownImportResult = {
   value: TRichEditorCanonicalValue;
 };
 
-export declare const RICH_EDITOR_SCHEMA_VERSION: 2;
+export declare const RICH_EDITOR_SCHEMA_VERSION: 3;
 
 export declare const createNodeEditor: (value?: unknown) => SlateEditor;
 

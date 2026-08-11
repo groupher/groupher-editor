@@ -1,7 +1,7 @@
 {
   "name": "@groupher/rich-editor",
   "private": false,
-  "version": "0.0.34",
+  "version": "0.0.36",
   "main": "dist/rich-editor.js",
   "module": "dist/rich-editor.js",
   "types": "dist/index.d.ts",
@@ -75,6 +75,7 @@
     "@radix-ui/react-popover": "^1.1.7",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tabs": "^1.1.19",
     "@radix-ui/react-toolbar": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/vite": "^4.1.12",

@@ -1,0 +1,146 @@
+{
+  "diagnostics": [],
+  "value": [
+    {
+      "children": [{ "text": "Markdown Extension Examples" }],
+      "type": "h1"
+    },
+    {
+      "children": [{ "text": "Syntax Highlighting" }],
+      "type": "h2"
+    },
+    {
+      "children": [
+        {
+          "children": [{ "text": "const first = true" }],
+          "type": "code_line"
+        },
+        {
+          "children": [{ "text": "const highlighted = true" }],
+          "highlighted": true,
+          "type": "code_line"
+        }
+      ],
+      "highlightLines": [2],
+      "lang": "js",
+      "type": "code_block"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [{ "text": "export default { language: \"js\" }" }],
+                  "type": "code_line"
+                }
+              ],
+              "lang": "js",
+              "type": "code_block"
+            }
+          ],
+          "codeGroupIndex": 0,
+          "label": "JS",
+          "type": "code_group_item"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [{ "text": "export default { language: \"ts\" }" }],
+                  "type": "code_line"
+                }
+              ],
+              "lang": "ts",
+              "type": "code_block"
+            }
+          ],
+          "codeGroupIndex": 1,
+          "label": "TS",
+          "type": "code_group_item"
+        }
+      ],
+      "groupId": "vitepress-code-group-0",
+      "type": "code_group"
+    },
+    {
+      "children": [{ "text": "Custom Containers" }],
+      "type": "h2"
+    },
+    {
+      "children": [{ "bold": true, "text": "Input" }],
+      "type": "p"
+    },
+    {
+      "children": [
+        {
+          "children": [{ "text": "::: info" }],
+          "type": "code_line"
+        },
+        {
+          "children": [{ "text": "This is an info box." }],
+          "type": "code_line"
+        },
+        {
+          "children": [{ "text": ":::" }],
+          "type": "code_line"
+        }
+      ],
+      "lang": "md",
+      "type": "code_block"
+    },
+    {
+      "children": [{ "bold": true, "text": "Output" }],
+      "type": "p"
+    },
+    {
+      "children": [{ "text": "This is an info box." }],
+      "title": "TITLE",
+      "type": "callout",
+      "variant": "info"
+    },
+    {
+      "children": [{ "text": "This is a tip." }],
+      "title": "TITLE",
+      "type": "callout",
+      "variant": "tip"
+    },
+    {
+      "children": [{ "text": "This is a warning." }],
+      "title": "TITLE",
+      "type": "callout",
+      "variant": "warning"
+    },
+    {
+      "children": [{ "text": "This is a dangerous warning." }],
+      "title": "TITLE",
+      "type": "callout",
+      "variant": "danger"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [{ "text": "TITLE" }],
+              "type": "accordion_title"
+            },
+            {
+              "children": [
+                {
+                  "children": [{ "text": "This is a details block." }],
+                  "type": "p"
+                }
+              ],
+              "type": "accordion_content"
+            }
+          ],
+          "type": "accordion"
+        }
+      ],
+      "type": "accordion_group"
+    }
+  ]
+}

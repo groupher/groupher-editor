@@ -19,4 +19,11 @@ export type {
   TRichEditorValidationDiagnostic,
   TRichEditorValidationResult,
 } from '@/node/types';
+export type {
+  TTabElement,
+  TTabIcon,
+  TTabsElement,
+  TTabsOrientation,
+  TTabsPersist,
+} from '@/tabs';
 export { validateValue } from '@/node/validate-value';

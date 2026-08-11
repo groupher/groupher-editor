@@ -24,6 +24,7 @@ import {
 	releaseEditorLocationRefs,
 } from "@/editor-location";
 import type { TRichEditorValue } from "@/types";
+import { TabsSyncProvider } from "@/components/ui/tabs-sync-provider";
 
 const cloneValue = (value: TRichEditorValue): TRichEditorValue =>
 	JSON.parse(JSON.stringify(value));
@@ -257,23 +258,25 @@ const RichEditor = React.forwardRef<TRichEditorHandle, TRichEditorProps>(
 		},
 		ref,
 	) {
-		return (
-			<I18nProvider locale={locale}>
-				<MentionProvider
-					mentionOptions={mentionOptions}
-					onMentionSearch={onMentionSearch}
-				>
-					<RichEditorInner
-						ref={ref}
-						defaultValue={defaultValueProp}
-						onChange={onChange}
-						className={className}
-						debugMode={debugMode}
-						quickActions={quickActions}
-					/>
-				</MentionProvider>
-			</I18nProvider>
-		);
+			return (
+				<I18nProvider locale={locale}>
+					<TabsSyncProvider>
+						<MentionProvider
+							mentionOptions={mentionOptions}
+							onMentionSearch={onMentionSearch}
+						>
+							<RichEditorInner
+								ref={ref}
+								defaultValue={defaultValueProp}
+								onChange={onChange}
+								className={className}
+								debugMode={debugMode}
+								quickActions={quickActions}
+							/>
+						</MentionProvider>
+					</TabsSyncProvider>
+				</I18nProvider>
+			);
 	},
 );
 
@@ -288,3 +291,11 @@ export type {
 	TRichEditorOutlineItem,
 } from "@/editor-api";
 export type { TRichEditorValue } from "@/types";
+export type {
+	TTabElement,
+	TTabIcon,
+	TTabsElement,
+	TTabsOrientation,
+	TTabsPersist,
+} from "@/tabs";
+export { TabsSyncProvider } from "@/components/ui/tabs-sync-provider";

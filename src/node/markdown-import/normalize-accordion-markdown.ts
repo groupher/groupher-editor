@@ -1,3 +1,5 @@
+import type { TRichEditorMarkdownSource } from '@/node/types';
+
 type TAccordionAttributes = Record<string, string>;
 
 const trimBlankLines = (lines: string[]): string[] => {
@@ -156,8 +158,52 @@ const normalizeHtmlDetails = (markdown: string): string => {
   return output;
 };
 
-export const normalizeAccordionMarkdown = (markdown: string): string => {
-  const withNamedGroups = normalizeNamedAccordionGroups(markdown);
+const normalizeVitePressDetails = (markdown: string): string => {
+  const lines = markdown.split('\n');
+  const output: string[] = [];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const opening = lines[index].match(/^(\s*):::\s*details(?:\s+(.*?))?\s*$/);
+    if (!opening) {
+      output.push(lines[index]);
+      continue;
+    }
+
+    const [, indent, rawTitle] = opening;
+    let closing = index + 1;
+    while (
+      closing < lines.length &&
+      !new RegExp(`^${indent}:::\\s*$`).test(lines[closing])
+    ) {
+      closing += 1;
+    }
+
+    if (closing === lines.length) {
+      output.push(lines[index]);
+      continue;
+    }
+
+    output.push(
+      portableAccordionGroup([
+        portableAccordion(
+          rawTitle?.trim() || 'Details',
+          lines.slice(index + 1, closing).join('\n')
+        ),
+      ])
+    );
+    index = closing;
+  }
+
+  return output.join('\n');
+};
+
+export const normalizeAccordionMarkdown = (
+  markdown: string,
+  source: TRichEditorMarkdownSource = 'groupher'
+): string => {
+  const withVitePressDetails =
+    source === 'vitepress' ? normalizeVitePressDetails(markdown) : markdown;
+  const withNamedGroups = normalizeNamedAccordionGroups(withVitePressDetails);
   const withStandaloneItems = normalizeStandaloneNamedAccordions(withNamedGroups);
 
   return normalizeHtmlDetails(withStandaloneItems);
